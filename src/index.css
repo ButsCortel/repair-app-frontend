@@ -1,11 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 html, body {
     height: 100vh;
+    min-height: 490px;
     overflow-x: hidden;
+}
+body {
+    font-family: 'Arvo', serif;
+    font-weight: bold;
+    position: relative;
 }
 #root, .container {
     height: 100%;
 }
+nav {
+    position: absolute !important;
+    width: 100vw;
+}
 div.dropdown-menu.show {
    left: 0px !important;
    min-width: 130px !important;
+}
+.status {
+    white-space: nowrap;
+    left: 50%;
+    transform: translateX(-50%);
 }

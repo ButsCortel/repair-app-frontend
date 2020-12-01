@@ -1,16 +1,21 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../user-context";
-import { Button, Form, Container, Row, Col, Alert } from "react-bootstrap";
+import { Button, Form, Container, Row, Col } from "react-bootstrap";
 import api from "../../services/api";
-
 import "./index.css";
+
 const LoginPage = ({ history }) => {
   const [login, setLogin] = useState({
     email: "",
     password: "",
     hasError: false,
     errorMessage: "",
+    success: false,
   });
+  useEffect(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }, []);
   const { setIsLoggedIn } = useContext(UserContext);
   const handleRegister = () => {
     history.push("/register");
@@ -30,40 +35,44 @@ const LoginPage = ({ history }) => {
           errorMessage: "Missing required Information!",
         });
       const response = await api.post("/user/login", { email, password });
-      console.log(response);
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setLogin({
         ...login,
         hasError: false,
         errorMessage: "",
+        success: true,
       });
-      setIsLoggedIn(true);
-      history.push("/");
+
+      setTimeout(() => {
+        setIsLoggedIn(true);
+        history.push("/");
+      }, 2000);
     } catch (error) {
       console.log(error);
       setLogin({
         ...login,
         hasError: true,
         errorMessage: "Username or Password does not match",
+        success: false,
       });
     }
   };
   return (
-    <Container>
+    <>
       <Row
         className="justify-content-around align-items-center h-100
       "
       >
-        <Col sm={12} md={6} className="m-auto p-5">
+        <Col sm={12} md={6} className="m-auto p-5 text-center text-md-left">
           {" "}
           <h1>Repair</h1>
           <p>Professional repair services for you</p>
         </Col>
-        <Col sm={12} md={6} className="border rounded p-5 shadow-sm">
+        <Col sm={12} md={6} className="border rounded p-5 shadow">
           <Form
             onSubmit={handleSubmit}
-            className="w-75 m-auto position-relative"
+            className="w-75 m-auto position-relative "
           >
             <Form.Group controlId="email">
               <Form.Label>Email address</Form.Label>
@@ -105,13 +114,16 @@ const LoginPage = ({ history }) => {
                 Sign up
               </Button>
             </Form.Group>
-            <Form.Text className="error position-absolute text-danger text-center">
+            <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
               {login.hasError ? login.errorMessage : ""}
+            </Form.Text>
+            <Form.Text className="status font-weight-bold position-absolute text-success text-center">
+              {login.success ? "Success! Signing in..." : ""}
             </Form.Text>
           </Form>
         </Col>
       </Row>
-    </Container>
+    </>
   );
 };
 
