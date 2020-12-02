@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../user-context";
-import { Button, Form, Container, Row, Col, Dropdown } from "react-bootstrap";
+import { Button, Form, Row, Col } from "react-bootstrap";
 import api from "../../services/api";
 
 const RegisterPage = ({ history }) => {
+  const { isLoggedIn } = useContext(UserContext);
   useEffect(() => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    if (isLoggedIn) history.push("/");
   }, []);
   const [register, setRegister] = useState({
     firstName: "",

@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../user-context";
-import { Button, Form, Container, Row, Col } from "react-bootstrap";
+import { Button, Form, Row, Col } from "react-bootstrap";
 import api from "../../services/api";
 import "./index.css";
 
 const LoginPage = ({ history }) => {
+  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+  useEffect(() => {
+    if (isLoggedIn) history.push("/");
+  }, []);
   const [login, setLogin] = useState({
     email: "",
     password: "",
@@ -12,11 +16,6 @@ const LoginPage = ({ history }) => {
     errorMessage: "",
     success: false,
   });
-  useEffect(() => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-  }, []);
-  const { setIsLoggedIn } = useContext(UserContext);
   const handleRegister = () => {
     history.push("/register");
   };

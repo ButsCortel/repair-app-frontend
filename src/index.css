@@ -10,12 +10,19 @@ body {
     font-weight: bold;
     position: relative;
 }
-#root, .container {
+#root{
     height: 100%;
 }
 nav {
-    position: absolute !important;
+    position: sticky !important;
+    top: 0;
     width: 100vw;
+    height: 56px;
+    z-index: 1;
+
+}
+#root > .container {
+    height: calc(100% - 56px);
 }
 div.dropdown-menu.show {
    left: 0px !important;
