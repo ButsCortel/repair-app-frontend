@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
+* {
+    margin: 0;
+    padding: 0;
+}
 html, body {
     height: 100vh;
     min-height: 490px;
@@ -11,14 +14,28 @@ body {
     position: relative;
 }
 #root{
+    min-height: 100%;
+    height: 1px;
+}
+#root > .container-fluid {
     height: 100%;
 }
-nav {
-    position: sticky !important;
+.row > .nav-col {
+    min-height: 56px;
+}
+nav.navbar {
+    position: fixed;
     top: 0;
-    width: 100vw;
     height: 56px;
-    z-index: 1;
+    z-index: 5;
+    min-width: 100vw;   
+}
+
+nav.navbar * {
+    color: white !important;
+}
+nav.navbar a:hover{
+    color: rgba(245, 245, 245, 0.671) !important;
 }
 
 
@@ -28,12 +45,16 @@ nav .navbar-collapse.show {
     border-bottom: 1px lightgray solid;
 }
 
-#root > .container {
-    height: calc(100% - 56px);
-}
 div.dropdown-menu.show {
    left: 0px !important;
-   min-width: 130px !important;
+   min-width: 100% !important;
+}
+div.dropdown-menu.show a {
+    color: black !important;
+}
+div.h-100 > .row:not(.login):not(.register) {
+    padding-top: 70px;
+    padding-bottom: 15px;
 }
 .status {
     white-space: nowrap;
@@ -47,3 +68,4 @@ textarea {
     overflow-x: hidden;
     overflow-y: auto;
 }
+

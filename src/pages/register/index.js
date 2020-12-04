@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { UserContext } from "../../user-context";
+import { SessionContext } from "../../session-context";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import api from "../../services/api";
 
 const RegisterPage = ({ history }) => {
-  const { isLoggedIn } = useContext(UserContext);
+  const { isLoggedIn } = useContext(SessionContext);
 
   useEffect(() => {
     if (isLoggedIn) history.push("/");
@@ -70,7 +70,7 @@ const RegisterPage = ({ history }) => {
   };
   return (
     <>
-      <Row className="justify-content-around align-items-center h-100">
+      <Row className="register justify-content-around align-items-center h-100">
         <Col
           md={12}
           lg={6}

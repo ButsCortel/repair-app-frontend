@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
-import { UserContext } from "../../user-context";
+import { SessionContext } from "../../session-context";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import api from "../../services/api";
 import "./index.css";
 
 const LoginPage = ({ history }) => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext(SessionContext);
 
   useEffect(() => {
     if (isLoggedIn) history.push("/");
@@ -62,7 +62,7 @@ const LoginPage = ({ history }) => {
   return (
     <>
       <Row
-        className="justify-content-around align-items-center h-100
+        className="login justify-content-around align-items-center h-100
       "
       >
         <Col sm={12} md={6} className="m-auto text-center text-md-left">
@@ -84,7 +84,9 @@ const LoginPage = ({ history }) => {
                 value={login.email}
                 placeholder="Enter your Email"
                 onChange={handleChange}
-                className={`${login.hasError ? "border-danger" : ""}`}
+                className={`${login.hasError ? "border-danger" : ""} ${
+                  login.success ? "border-success" : ""
+                }`}
               />
             </Form.Group>
             <Form.Group controlId="password">
@@ -96,7 +98,9 @@ const LoginPage = ({ history }) => {
                 value={login.password}
                 placeholder="Enter your Password"
                 onChange={handleChange}
-                className={`${login.hasError ? "border-danger" : ""}`}
+                className={`${login.hasError ? "border-danger" : ""} ${
+                  login.success ? "border-success" : ""
+                }`}
               />
             </Form.Group>
             <Form.Group className="text-center w-50 mx-auto">

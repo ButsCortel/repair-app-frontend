@@ -1,16 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
-import { UserContext } from "../../user-context";
+import { SessionContext } from "../../session-context";
 import { Row, Col, CardDeck } from "react-bootstrap";
 import RepairCard from "./components/RepairCard";
 import api from "../../services/api";
 import "./index.css";
 
 const RepairPage = ({ history }) => {
-  const { isLoggedIn } = useContext(UserContext);
+  const { isLoggedIn, repairs, setRepairs } = useContext(SessionContext);
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
   const [state, setState] = useState({
-    repairs: [],
     hasError: false,
     errorMessage: "",
     success: false,
@@ -27,7 +26,7 @@ const RepairPage = ({ history }) => {
       const response = await api.get("/requests/all", {
         headers: { "auth-token": token },
       });
-      setState({ ...state, repairs: response.data.repairs });
+      setRepairs(response.data.repairs);
     } catch (error) {
       console.log(error);
     }
@@ -36,9 +35,9 @@ const RepairPage = ({ history }) => {
   return (
     <>
       <Row className="row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
-        {state.repairs.map((repair) => (
-          <Col>
-            <RepairCard data={repair} key={repair.id} />
+        {repairs.map((repair) => (
+          <Col key={repair.id}>
+            <RepairCard data={repair} />
           </Col>
         ))}
       </Row>

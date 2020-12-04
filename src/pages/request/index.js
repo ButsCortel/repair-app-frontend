@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect, useMemo } from "react";
-import { UserContext } from "../../user-context";
+import { SessionContext } from "../../session-context";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import "./index.css";
 import api from "../../services/api";
 
 const RequestPage = ({ history }) => {
-  const { isLoggedIn } = useContext(UserContext);
+  const { isLoggedIn } = useContext(SessionContext);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   // eslint-disable-next-line
@@ -21,6 +21,8 @@ const RequestPage = ({ history }) => {
     errorMessage: "",
     success: "",
   });
+
+  const initial = state;
   const preview = useMemo(() => {
     return state.image ? URL.createObjectURL(state.image) : null;
   }, [state.image]);
@@ -30,7 +32,6 @@ const RequestPage = ({ history }) => {
     setState({ ...state, [name]: value });
   };
   const handleRequest = async (event) => {
-    console.log(state);
     event.preventDefault();
     const repairData = new FormData();
 
@@ -45,7 +46,10 @@ const RequestPage = ({ history }) => {
           headers: { "auth-token": token },
         });
         setState({
-          ...state,
+          device: "",
+          issue: "",
+          image: null,
+          expedite: "No",
           success: true,
           hasError: false,
           errorMessage: "",
@@ -69,7 +73,7 @@ const RequestPage = ({ history }) => {
 
   return (
     <>
-      <Row className="align-items-stretch mx-auto">
+      <Row className="mx-auto">
         <Col md={12} lg={6} className=" ">
           <h4>Please provide the following information:</h4>
           <Form onSubmit={handleRequest} className="mx-auto">
@@ -149,7 +153,7 @@ const RequestPage = ({ history }) => {
             </Form.Text>
           </Form>
         </Col>
-        <Col md={12} lg={6} className="text-center  ">
+        <Col md={12} lg={6} className="text-center ">
           <Form className="h-100">
             <Form.Group controlId="repairImg" className="h-100">
               <Form.Label>Upload Image:</Form.Label>
