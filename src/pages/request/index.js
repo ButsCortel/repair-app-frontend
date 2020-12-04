@@ -1,28 +1,67 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import { UserContext } from "../../user-context";
 import { Row, Col, Form, Button } from "react-bootstrap";
+import "./index.css";
+import api from "../../services/api";
 
 const RequestPage = ({ history }) => {
   const { isLoggedIn } = useContext(UserContext);
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  // eslint-disable-next-line
   useEffect(() => {
     if (!isLoggedIn) history.push("/login");
   }, []);
   const [state, setState] = useState({
-    customer: "",
     device: "",
     issue: "",
-    image: "",
+    image: null,
+    expedite: "No",
     hasError: false,
     errorMessage: "",
     success: "",
   });
+  const preview = useMemo(() => {
+    return state.image ? URL.createObjectURL(state.image) : null;
+  }, [state.image]);
   const handleChange = (event) => {
-    const { value, name } = event.target;
+    const { value, name, files } = event.target;
+    if (files) return setState({ ...state, [name]: files[0] });
     setState({ ...state, [name]: value });
   };
-  const handleRequest = (event) => {
-    event.preventDefault();
+  const handleRequest = async (event) => {
     console.log(state);
+    event.preventDefault();
+    const repairData = new FormData();
+
+    try {
+      if (state.device && state.issue && state.image) {
+        repairData.append("device", state.device);
+        repairData.append("customer", user._id);
+        repairData.append("issue", state.issue);
+        repairData.append("image", state.image);
+        repairData.append("expedite", state.expedite);
+        await api.post("/requests/create", repairData, {
+          headers: { "auth-token": token },
+        });
+        setState({
+          ...state,
+          success: true,
+          hasError: false,
+          errorMessage: "",
+        });
+        setTimeout(() => history.push("/"), 2000);
+      } else {
+        setState({
+          ...state,
+          success: false,
+          hasError: true,
+          errorMessage: "Missing required information!",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleCancel = () => {
     history.push("/");
@@ -30,84 +69,72 @@ const RequestPage = ({ history }) => {
 
   return (
     <>
-      <Row
-        className="d-flex 
-      align-items-stretch border rounded p-5 shadow"
-      >
-        <Col md={12} lg={6} className="order-2 order-lg-1 ">
+      <Row className="align-items-stretch mx-auto">
+        <Col md={12} lg={6} className=" ">
+          <h4>Please provide the following information:</h4>
           <Form onSubmit={handleRequest} className="mx-auto">
-            <Row>
-              <Col>
-                <Form.Group inline="true" controlId="firstName">
-                  <Form.Control
-                    onChange={handleChange}
-                    value={state.firstName}
-                    required
-                    name="firstName"
-                    type="text"
-                    placeholder="Firstname"
-                  />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group inline="true" controlId="lastName">
-                  <Form.Control
-                    onChange={handleChange}
-                    value={state.lastName}
-                    required
-                    name="lastName"
-                    type="text"
-                    placeholder="Lastname"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Form.Group inline="true" controlId="email">
+            <Form.Group controlId="device">
               <Form.Control
-                required
                 onChange={handleChange}
-                value={state.email}
-                name="email"
-                type="email"
-                placeholder="Email"
+                value={state.device}
+                required
+                name="device"
+                type="text"
+                placeholder="device"
               />
             </Form.Group>
-            <Form.Group inline="true" controlId="password">
+
+            <Form.Group controlId="issue">
               <Form.Control
+                as="textarea"
                 required
                 onChange={handleChange}
-                value={state.password}
-                name="password"
-                type="password"
-                placeholder="Password"
+                value={state.issue}
+                name="issue"
+                placeholder="issue/description"
+                rows={4}
               />
             </Form.Group>
-            <Form.Group controlId="type" className="text-center">
-              <select
-                className="form-control border-bottom"
-                name="type"
-                value={state.type}
+
+            <Form.Group controlId="expedite" className="text-center">
+              <Form.Label>Expedite?: </Form.Label>
+              <input
+                id="Yes"
+                name="expedite"
+                type="radio"
+                className="ml-3"
+                checked={state.expedite === "Yes"}
+                value="Yes"
                 onChange={handleChange}
-                required
-              >
-                <option value="" default aria-readonly>
-                  Please select Account type...
-                </option>
-                <option value="USER">User</option>
-                <option value="TECHNICIAN">Technician</option>
-              </select>
+              />
+              <label htmlFor="Yes" className="mr-3">
+                Yes
+              </label>
+              <input
+                id="No"
+                name="expedite"
+                type="radio"
+                className="ml-3"
+                checked={state.expedite === "No"}
+                value="No"
+                onChange={handleChange}
+              />
+              <label htmlFor="No" className="mr-3">
+                No
+              </label>
             </Form.Group>
-            <Form.Group className="text-center w-50 mx-auto">
+
+            <Form.Group className="text-center w-25 mx-auto">
               <Button
                 variant="warning"
                 type="submit"
-                className="btn-block w-30 rounded-pill"
+                className="btn-block rounded-pill"
               >
                 Create
               </Button>
               <Button
                 variant="secondary"
-                className="btn-block w-30 rounded-pill"
+                className="btn-block rounded-pill"
                 onClick={handleCancel}
               >
                 Cancel
@@ -118,13 +145,30 @@ const RequestPage = ({ history }) => {
               {state.hasError ? state.errorMessage : ""}
             </Form.Text>
             <Form.Text className="status font-weight-bold position-absolute text-success text-center">
-              {state.success ? "Success! Redirecting to Sign in page..." : ""}
+              {state.success ? "Success! Redirecting to home..." : ""}
             </Form.Text>
           </Form>
         </Col>
-        <Col md={12} lg={6} className="text-center order-1 order-lg-2">
-          <h1>Sign up</h1>
-          <p>Please state first to continue.</p>
+        <Col md={12} lg={6} className="text-center  ">
+          <Form className="h-100">
+            <Form.Group controlId="repairImg" className="h-100">
+              <Form.Label>Upload Image:</Form.Label>
+              <Form.File
+                className="bg-light border border-dark rounded mx-auto text-center"
+                name="image"
+                onChange={handleChange}
+                style={
+                  preview
+                    ? {
+                        backgroundImage: `url(${preview})`,
+                      }
+                    : {}
+                }
+                required
+                accept=".png,.jpg,.jpeg"
+              />
+            </Form.Group>
+          </Form>
         </Col>
       </Row>
     </>

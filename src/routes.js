@@ -16,7 +16,7 @@ const Routes = () => {
     <ContextWrapper>
       <BrowserRouter>
         <TopNav />
-        <Container>
+        <Container className="pt-5">
           <Switch>
             <Route path="/login" exact component={LoginPage} />
             <Route path="/register" exact component={RegisterPage} />

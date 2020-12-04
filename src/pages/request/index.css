@@ -1,0 +1,21 @@
+
+
+.form-file {
+    background-image: url("../../assets/camera.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 300px;
+    width: 350px;
+}
+.form-file:hover {
+    opacity: .5;   
+}
+#repairImg{
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+}
+.form-control-file {
+    cursor: pointer;
+}

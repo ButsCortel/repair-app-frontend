@@ -21,12 +21,12 @@ const TopNav = () => {
   return isLoggedIn ? (
     <>
       <Navbar bg="light" expand="lg" className="px-5">
-        <Navbar.Brand href="#home">Repair</Navbar.Brand>
+        <Navbar.Brand href="/">Repair</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
+            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link href="/repairs/create">Request</Nav.Link>
             <NavDropdown title={`Hi ${name}!`} id="topnav-dropdown">
               <NavDropdown.Item href="#action/3.1">Account</NavDropdown.Item>
               <NavDropdown.Item onClick={signoutHandler}>

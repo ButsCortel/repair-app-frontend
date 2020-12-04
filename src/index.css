@@ -19,8 +19,15 @@ nav {
     width: 100vw;
     height: 56px;
     z-index: 1;
-
 }
+
+
+nav .navbar-collapse.show {
+    z-index: 1;
+    background-color: white;
+    border-bottom: 1px lightgray solid;
+}
+
 #root > .container {
     height: calc(100% - 56px);
 }
@@ -32,4 +39,11 @@ div.dropdown-menu.show {
     white-space: nowrap;
     left: 50%;
     transform: translateX(-50%);
+}
+
+
+textarea {
+    resize: none;
+    overflow-x: hidden;
+    overflow-y: auto;
 }

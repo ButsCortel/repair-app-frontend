@@ -1,0 +1,23 @@
+.card-img-top {
+    height: 170px ;
+    width: 240px ;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.card { 
+    height: 370px ;
+    width: 254px ;
+}
+
+.card-body div.scroll{
+    border: lightgray solid 1px;
+    height: 100px;
+    text-overflow: clip;
+    overflow: auto;
+}
+
+
+.card:hover {
+    transform: scale(1.1)
+}

@@ -1,7 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../user-context";
-import { Row, Col, Table } from "react-bootstrap";
+import { Row, Col, CardDeck } from "react-bootstrap";
+import RepairCard from "./components/RepairCard";
 import api from "../../services/api";
+import "./index.css";
 
 const RepairPage = ({ history }) => {
   const { isLoggedIn } = useContext(UserContext);
@@ -17,7 +19,7 @@ const RepairPage = ({ history }) => {
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
     getRepairs();
-    console.log(state.repairs);
+    // eslint-disable-next-line
   }, []);
 
   const getRepairs = async () => {
@@ -25,38 +27,20 @@ const RepairPage = ({ history }) => {
       const response = await api.get("/requests/all", {
         headers: { "auth-token": token },
       });
-      setState({ ...state, repairs: response.data });
+      setState({ ...state, repairs: response.data.repairs });
     } catch (error) {
       console.log(error);
     }
   };
-  const mapRepairs = () => {
-    // return (
-    //   state.repairs.map((repair) => {
-    //     return (
-    //     )
-    //   })
-    // )
-  };
+
   return (
     <>
-      <Row className="text-center h-100 pt-5">
-        <Col className="mt-5">
-          <h1>Repairs</h1>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Date</th>
-                <th>Customer</th>
-                <th>Device</th>
-                <th>Issue</th>
-                <th>Tech</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-          </Table>
-        </Col>
+      <Row className="row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
+        {state.repairs.map((repair) => (
+          <Col>
+            <RepairCard data={repair} key={repair.id} />
+          </Col>
+        ))}
       </Row>
     </>
   );

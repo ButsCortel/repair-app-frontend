@@ -6,8 +6,10 @@ import "./index.css";
 
 const LoginPage = ({ history }) => {
   const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+
   useEffect(() => {
     if (isLoggedIn) history.push("/");
+    // eslint-disable-next-line
   }, []);
   const [login, setLogin] = useState({
     email: "",
@@ -63,7 +65,7 @@ const LoginPage = ({ history }) => {
         className="justify-content-around align-items-center h-100
       "
       >
-        <Col sm={12} md={6} className="m-auto p-5 text-center text-md-left">
+        <Col sm={12} md={6} className="m-auto text-center text-md-left">
           {" "}
           <h1>Repair</h1>
           <p>Professional repair services for you</p>
@@ -101,13 +103,13 @@ const LoginPage = ({ history }) => {
               <Button
                 variant="warning"
                 type="submit"
-                className="btn-block w-30 rounded-pill"
+                className="btn-block rounded-pill"
               >
                 Sign in
               </Button>
               <Button
                 variant="secondary"
-                className="btn-block w-30 rounded-pill"
+                className="btn-block rounded-pill"
                 onClick={handleRegister}
               >
                 Sign up

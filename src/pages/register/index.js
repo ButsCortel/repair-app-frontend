@@ -5,8 +5,10 @@ import api from "../../services/api";
 
 const RegisterPage = ({ history }) => {
   const { isLoggedIn } = useContext(UserContext);
+
   useEffect(() => {
     if (isLoggedIn) history.push("/");
+    // eslint-disable-next-line
   }, []);
   const [register, setRegister] = useState({
     firstName: "",
@@ -61,7 +63,7 @@ const RegisterPage = ({ history }) => {
         ...register,
         hasError: true,
         errorMessage: "Email already exists!",
-        link: <a href="">Sign up instead?</a>,
+        link: "Sign up",
         success: false,
       });
     }
@@ -129,7 +131,7 @@ const RegisterPage = ({ history }) => {
                 onChange={handleChange}
                 required
               >
-                <option value="" default aria-readonly>
+                <option value="" default>
                   Please select Account type...
                 </option>
                 <option value="USER">User</option>
