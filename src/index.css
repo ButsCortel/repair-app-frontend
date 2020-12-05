@@ -31,27 +31,26 @@ nav.navbar {
     min-width: 100vw;   
 }
 
-nav.navbar * {
+
+a.dropdown-toggle.nav-link {
     color: white !important;
 }
-nav.navbar a:hover{
-    color: rgba(245, 245, 245, 0.671) !important;
-}
-
 
 nav .navbar-collapse.show {
     z-index: 1;
-    background-color: white;
-    border-bottom: 1px lightgray solid;
+
+}
+
+div.ml-auto.navbar-nav > a:hover , div.ml-auto.navbar-nav > div > a:hover{
+    color: rgba(255, 255, 255, 0.774) !important ;
 }
 
 div.dropdown-menu.show {
    left: 0px !important;
    min-width: 100% !important;
 }
-div.dropdown-menu.show a {
-    color: black !important;
-}
+
+
 div.h-100 > .row:not(.login):not(.register) {
     padding-top: 70px;
     padding-bottom: 15px;
@@ -69,3 +68,16 @@ textarea {
     overflow-y: auto;
 }
 
+@media only screen and (max-width: 991px) {
+    div.navbar-collapse.show {
+        background-color: white;
+        border: gray;  
+    }
+    div.navbar-collapse.show a
+    {
+        color: black !important;
+    }
+    div.ml-auto.navbar-nav a:hover {
+        color: gray !important ;
+    }
+}

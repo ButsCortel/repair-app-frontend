@@ -20,14 +20,18 @@ const TopNav = () => {
 
   return isLoggedIn ? (
     <>
-      <Navbar bg="warning" variant="dark" expand="lg">
+      <Navbar bg="warning" variant="dark" expand="lg" className="text-white">
         <Container>
           <Navbar.Brand href="/">Repair</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              <Nav.Link href="/">Home</Nav.Link>
-              <Nav.Link href="/repairs/create">Request</Nav.Link>
+              <Nav.Link className="text-white" href="/">
+                Home
+              </Nav.Link>
+              <Nav.Link className="text-white" href="/repairs/create">
+                Request
+              </Nav.Link>
               <NavDropdown title={`Hi ${name}!`} id="topnav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Account</NavDropdown.Item>
                 <NavDropdown.Item onClick={signoutHandler}>

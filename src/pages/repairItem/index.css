@@ -1,0 +1,9 @@
+.product-img {
+    height: 300px;
+    width: 480px;
+    display: table-cell;
+    vertical-align: middle;
+}
+.details-body > dt{
+    font-size: xx-small;
+}

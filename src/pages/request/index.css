@@ -6,7 +6,7 @@
     background-repeat: no-repeat;
     background-position: center;
     height: 300px;
-    width: 350px;
+    max-width: 350px;
 }
 .form-file:hover {
     opacity: .5;   
