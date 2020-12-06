@@ -1,9 +1,41 @@
 .product-img {
     height: 300px;
     width: 480px;
-    display: table-cell;
+    margin: 0 auto;
     vertical-align: middle;
+    display: block;
 }
-.details-body > dt{
+.details-body {
+    font-weight: normal;
+    
+}
+ul{
+    list-style: none;
+}
+
+ul li:nth-child(odd){
     font-size: xx-small;
+}
+
+a.email {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+}
+
+li.li-container:hover a.email {
+    display: inline;
+    border: gray 1px solid;
+    border-radius: 5px;
+    padding: 3px;
+    background-color: white;
+}
+.issue {
+    height: 75px;
+    padding: 3px;
+}
+
+.tech-button button{
+    margin: 0 3px;
 }

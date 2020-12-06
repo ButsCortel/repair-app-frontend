@@ -11,17 +11,33 @@ export const ContextWrapper = (props) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(defaultValueHandler());
   const [repairs, setRepairs] = useState([]);
-  const [repair, setRepair] = useState({});
+  const statusColor = (status) => {
+    switch (status) {
+      case "RECEIVED":
+        return "secondary";
+      case "ONGOING":
+        return "warning";
+      case "ON HOLD":
+        return "danger";
+      case "Cancelled":
+        return "secondary";
+      case "OUTGOING":
+        return "info";
+      case "COMPLETED":
+        return "success";
+      default:
+        return "primary";
+    }
+  };
   const value = React.useMemo(
     () => ({
       isLoggedIn,
       setIsLoggedIn,
       repairs,
       setRepairs,
-      repair,
-      setRepair,
+      statusColor,
     }),
-    [isLoggedIn, repairs, repair]
+    [isLoggedIn, repairs]
   );
 
   return (

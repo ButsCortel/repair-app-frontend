@@ -22,7 +22,6 @@ const RequestPage = ({ history }) => {
     success: "",
   });
 
-  const initial = state;
   const preview = useMemo(() => {
     return state.image ? URL.createObjectURL(state.image) : null;
   }, [state.image]);

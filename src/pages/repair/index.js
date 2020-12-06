@@ -32,7 +32,7 @@ const RepairPage = ({ history }) => {
     }
   };
 
-  return (
+  return repairs ? (
     <>
       <Row className="row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
         {repairs.map((repair) => (
@@ -42,7 +42,7 @@ const RepairPage = ({ history }) => {
         ))}
       </Row>
     </>
-  );
+  ) : null;
 };
 
 export default RepairPage;

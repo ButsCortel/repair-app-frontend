@@ -1,35 +1,18 @@
 import React, { useState, useContext } from "react";
-import { Card } from "react-bootstrap";
+import { Badge, Card } from "react-bootstrap";
 import { SessionContext } from "../../../session-context";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 
 const RepairCard = ({ data }) => {
   const history = useHistory();
-  const { setRepair } = useContext(SessionContext);
-  const statusColor = (status) => {
-    switch (status) {
-      case "RECEIVED":
-        return "secondary";
-      case "ONGOING":
-        return "warning";
-      case "ON HOLD":
-        return "danger";
-      case "OUTGOING":
-        return "info";
-      case "COMPLETED":
-        return "success";
-      default:
-        return "primary";
-    }
-  };
-  const handleClick = (repair) => {
-    setRepair(repair);
-    history.push("/repairs/" + repair.device);
+  const { statusColor } = useContext(SessionContext);
+  const handleClick = (id) => {
+    history.push("/repairs/" + id);
   };
   return (
     <Card
-      onClick={() => handleClick(data)}
+      onClick={() => handleClick(data._id)}
       bg="light"
       border={data.expedite ? "danger" : "secondary"}
       className="my-2 p-1 mx-auto"
@@ -45,16 +28,12 @@ const RepairCard = ({ data }) => {
         className="card-img-top mx-auto border border-light rounded"
       ></div>
       <Card.Body className="p-2">
-        <Card.Text
-          className={`${
-            data.expedite ? "text-danger" : "text-secondary"
-          } small mb-1`}
-        >
-          {data.expedite ? "EXPEDITE" : "REGULAR"}
-        </Card.Text>
-        <Card.Text className={`small mb-1 text-${statusColor(data.status)}`}>
-          {data.status}
-        </Card.Text>
+        <div className="small text-center">
+          <Badge variant={statusColor(data.status)}>{data.status}</Badge>
+          <Badge variant={data.expedite ? "danger" : "secondary"}>
+            {data.expedite ? "EXPEDITE" : "REGULAR"}
+          </Badge>
+        </div>
         <div className="scroll">
           <Card.Text className="small mb-1">{data.issue}</Card.Text>
         </div>

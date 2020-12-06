@@ -1,35 +1,199 @@
 import React, { useState, useContext, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { SessionContext } from "../../session-context";
-import { Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Badge, Button, Form } from "react-bootstrap";
+import api from "../../services/api";
+import moment from "moment";
 import "./index.css";
 const RequestItemPage = ({ history }) => {
-  const { isLoggedIn, repair } = useContext(SessionContext);
+  const token = localStorage.getItem("token");
+  const { isLoggedIn, statusColor } = useContext(SessionContext);
+  const [repair, setRepair] = useState(null);
+  const { id } = useParams();
+  const [state, setState] = useState({
+    status: "",
+    note: "",
+    repairId: "",
+    success: false,
+    hasError: false,
+    errorMessage: "",
+  });
+  const handleChange = (event) => {
+    const { value, name } = event.target;
+    setState({ ...state, [name]: value });
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const { status, note } = state;
+    if (!status || !note) return alert("Missing information!");
+    try {
+      const response = await api.put(
+        "/requests/" + repair._id,
+        { status, note },
+        { headers: { "auth-token": token } }
+      );
+      setState({
+        status: "",
+        note: "",
+        repairId: "",
+        success: true,
+        hasError: false,
+        errorMessage: "",
+      });
+      setTimeout(() => window.location.reload(), 2000);
+    } catch (error) {
+      console.log(error);
+      setState({
+        ...state,
+        hasError: true,
+        errorMessage: "Missing Information!",
+        success: false,
+      });
+    }
+  };
+  const getRepair = async () => {
+    try {
+      const response = await api.get("/requests/" + id, {
+        headers: { "auth-token": token },
+      });
+      console.log(response.data);
+      setRepair(response.data);
+    } catch (error) {}
+  };
+  let mounted;
   useEffect(() => {
-    if (!isLoggedIn) history.push("/login");
-    // eslint-disable-next-line
+    if (!isLoggedIn) return history.push("/login");
+    getRepair();
   }, []);
-  return (
+
+  const newDate = (date) => {
+    const original = moment(date);
+    return original.format("MMM Do YYYY, h:mm:ss a");
+  };
+  return !repair ? null : (
     <>
-      <Row className="text-center justify-content-around align-items-start">
+      <Row className="text-center justify-content-between align-items-start mh-100">
         <Col md={12} lg={6}>
-          <div className="mw-100 product-img">
+          <div className="product-img d-table-cell d-sm-block">
             <img className="mh-100 mw-100" src={repair.image_url} />
           </div>
         </Col>
         <Col md={12} lg={6}>
-          <h4>Request Details:</h4>
-          <dl className="details-body text-left">
-            <dt>Request ID</dt>
-            <dd>{repair._id}</dd>
-            <dt>Requestor</dt>
-            <dd title={repair.customer.email}>
-              {repair.customer.firstName} {repair.customer.lastName}
-            </dd>
-            <dt>Device</dt>
-            <dd>{repair.device}</dd>
-            <dt>Issue/Description</dt>
-            <dd>{repair.issue}</dd>
-          </dl>
+          <Container className="details-body text-left">
+            <h4>{repair.device}</h4>
+            <div className="text-left">
+              <Badge variant={statusColor(repair.status)}>
+                {repair.status}
+              </Badge>
+              <Badge
+                className="ml-1"
+                variant={repair.expedite ? "danger" : "secondary"}
+              >
+                {repair.expedite ? "EXPEDITE" : "REGULAR"}
+              </Badge>
+            </div>
+            <Row>
+              <Col>
+                <ul>
+                  <li>Created</li>
+                  <li>{newDate(repair.dateCreated)}</li>
+                  <li>Requestor</li>
+                  <li className="li-container position-relative">
+                    {repair.customer.firstName} {repair.customer.lastName}
+                    <a
+                      className="email"
+                      href={`mailto:${repair.customer.email}`}
+                    >
+                      {repair.customer.email}
+                    </a>
+                  </li>
+                </ul>
+              </Col>
+              <Col>
+                <ul>
+                  <li>Updated</li>
+                  <li>{newDate(repair.lastUpdate)}</li>
+                  <li>Last User</li>
+                  <li className="li-container position-relative">
+                    {repair.user.firstName} {repair.user.lastName}
+                    <a className="email" href={`mailto:${repair.user.email}`}>
+                      {repair.user.email}
+                    </a>
+                  </li>
+                </ul>
+              </Col>
+            </Row>
+            <ul>
+              <li>Issue/Description</li>
+              <li className="issue overflow-auto">{repair.issue}</li>
+            </ul>
+            <Row className="justify-content-center">
+              <Col>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="status">
+                    <Form.Control
+                      name="status"
+                      value={state.status}
+                      className="d-inline-block w-auto"
+                      as="select"
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="" default>
+                        Update Status:
+                      </option>
+                      <option value="RECEIVED" default>
+                        RECEIVED
+                      </option>
+                      <option value="ONGOING" default>
+                        ONGOING
+                      </option>
+                      <option value="ON HOLD" default>
+                        ON HOLD
+                      </option>
+                      <option value="OUTGOING" default>
+                        OUTGOING
+                      </option>
+                      <option value="COMPLETED" default>
+                        COMPLETED
+                      </option>
+                      <option value="CANCELLED" default>
+                        CANCELLED
+                      </option>
+                    </Form.Control>
+                  </Form.Group>
+                  <Form.Group className="" controlId="note">
+                    <Form.Control
+                      placeholder="Note:"
+                      as="textarea"
+                      name="note"
+                      value={state.note}
+                      rows={3}
+                      onChange={handleChange}
+                      disabled={!state.status}
+                      required
+                    />
+                    <div className="d-flex justify-content-end mt-2">
+                      <Button
+                        type="submit"
+                        className="mx-1 w-25"
+                        disabled={!state.status || !state.note}
+                      >
+                        Submit
+                      </Button>
+                      <Button
+                        variant="danger"
+                        className="mx-2 w-25"
+                        disabled={!state.status || !state.note}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </Form.Group>
+                </Form>
+              </Col>
+            </Row>
+          </Container>
         </Col>
       </Row>
     </>
