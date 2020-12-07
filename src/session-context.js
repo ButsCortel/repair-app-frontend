@@ -13,13 +13,11 @@ export const ContextWrapper = (props) => {
   const [repairs, setRepairs] = useState([]);
   const statusColor = (status) => {
     switch (status) {
-      case "RECEIVED":
-        return "secondary";
       case "ONGOING":
         return "warning";
       case "ON HOLD":
         return "danger";
-      case "Cancelled":
+      case "CANCELLED":
         return "secondary";
       case "OUTGOING":
         return "info";

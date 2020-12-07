@@ -4,17 +4,23 @@ import { SessionContext } from "../../../session-context";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 
-const RepairCard = ({ data }) => {
+const RepairCard = ({ data, handleClick }) => {
   const history = useHistory();
   const { statusColor } = useContext(SessionContext);
-  const handleClick = (id) => {
-    history.push("/repairs/" + id);
-  };
+
   return (
     <Card
       onClick={() => handleClick(data._id)}
       bg="light"
-      border={data.expedite ? "danger" : "secondary"}
+      border={
+        data.status === "COMPLETED"
+          ? "success"
+          : data.expedite
+          ? "danger"
+          : data.status === "CANCELLED"
+          ? ""
+          : "primary"
+      }
       className="my-2 p-1 mx-auto"
     >
       <Card.Header
@@ -29,8 +35,13 @@ const RepairCard = ({ data }) => {
       ></div>
       <Card.Body className="p-2">
         <div className="small text-center">
-          <Badge variant={statusColor(data.status)}>{data.status}</Badge>
-          <Badge variant={data.expedite ? "danger" : "secondary"}>
+          <Badge className="mx-1" variant={statusColor(data.status)}>
+            {data.status}
+          </Badge>
+          <Badge
+            className="mx-1"
+            variant={data.expedite ? "danger" : "primary"}
+          >
             {data.expedite ? "EXPEDITE" : "REGULAR"}
           </Badge>
         </div>
@@ -38,7 +49,9 @@ const RepairCard = ({ data }) => {
           <Card.Text className="small mb-1">{data.issue}</Card.Text>
         </div>
         <Card.Footer className="small mb-1">
-          Updated {moment(data.lastUpdate).fromNow()}
+          {`${data.status === "INCOMING" ? "Created" : "Updated"} ${moment(
+            data.lastUpdate
+          ).fromNow()}`}
         </Card.Footer>
       </Card.Body>
     </Card>

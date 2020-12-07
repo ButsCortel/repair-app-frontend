@@ -135,7 +135,7 @@ const RegisterPage = ({ history }) => {
                   Please select Account type...
                 </option>
                 <option value="USER">User</option>
-                <option value="TECHNICIAN">Technician</option>
+                <option value="TECH">Technician</option>
               </select>
             </Form.Group>
             <Form.Group className="text-center w-50 mx-auto">

@@ -7,6 +7,7 @@ import moment from "moment";
 import "./index.css";
 const RequestItemPage = ({ history }) => {
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
   const { isLoggedIn, statusColor } = useContext(SessionContext);
   const [repair, setRepair] = useState(null);
   const { id } = useParams();
@@ -42,7 +43,6 @@ const RequestItemPage = ({ history }) => {
       });
       setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
-      console.log(error);
       setState({
         ...state,
         hasError: true,
@@ -56,9 +56,11 @@ const RequestItemPage = ({ history }) => {
       const response = await api.get("/requests/" + id, {
         headers: { "auth-token": token },
       });
-      console.log(response.data);
+      console.log(user);
       setRepair(response.data);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
   let mounted;
   useEffect(() => {
@@ -87,7 +89,7 @@ const RequestItemPage = ({ history }) => {
               </Badge>
               <Badge
                 className="ml-1"
-                variant={repair.expedite ? "danger" : "secondary"}
+                variant={repair.expedite ? "danger" : "primary"}
               >
                 {repair.expedite ? "EXPEDITE" : "REGULAR"}
               </Badge>
@@ -134,32 +136,57 @@ const RequestItemPage = ({ history }) => {
                     <Form.Control
                       name="status"
                       value={state.status}
-                      className="d-inline-block w-auto"
+                      className={`d-inline-block w-auto ${
+                        state.status === "DELETE" ? "border border-danger" : ""
+                      }`}
                       as="select"
                       onChange={handleChange}
                       required
+                      disabled={
+                        user._id !== repair.customer._id && user.type === "USER"
+                      }
                     >
                       <option value="" default>
                         Update Status:
                       </option>
-                      <option value="RECEIVED" default>
-                        RECEIVED
-                      </option>
-                      <option value="ONGOING" default>
-                        ONGOING
-                      </option>
-                      <option value="ON HOLD" default>
-                        ON HOLD
-                      </option>
-                      <option value="OUTGOING" default>
-                        OUTGOING
-                      </option>
-                      <option value="COMPLETED" default>
-                        COMPLETED
-                      </option>
-                      <option value="CANCELLED" default>
-                        CANCELLED
-                      </option>
+                      {user.type !== "USER" ? (
+                        <>
+                          <option value="RECEIVED" default>
+                            RECEIVED
+                          </option>
+                          <option value="ONGOING" default>
+                            ONGOING
+                          </option>
+                          <option value="ON HOLD" default>
+                            ON HOLD
+                          </option>
+                          <option value="OUTGOING" default>
+                            OUTGOING
+                          </option>
+                          <option value="COMPLETED" default>
+                            COMPLETED
+                          </option>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                      {user.type === "ADMIN" ||
+                      user._id === repair.customer._id ? (
+                        <>
+                          <option value="CANCELLED" default>
+                            CANCEL
+                          </option>
+                          <option
+                            className="bg-danger text-white"
+                            value="DELETE"
+                            default
+                          >
+                            DELETE
+                          </option>
+                        </>
+                      ) : (
+                        ""
+                      )}
                     </Form.Control>
                   </Form.Group>
                   <Form.Group className="" controlId="note">
@@ -190,6 +217,12 @@ const RequestItemPage = ({ history }) => {
                       </Button>
                     </div>
                   </Form.Group>
+                  <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
+                    {state.hasError ? state.errorMessage : ""}
+                  </Form.Text>
+                  <Form.Text className="status font-weight-bold position-absolute text-success text-center">
+                    {state.success ? "Request updated! Loading..." : ""}
+                  </Form.Text>
                 </Form>
               </Col>
             </Row>

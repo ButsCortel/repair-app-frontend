@@ -31,13 +31,16 @@ const RepairPage = ({ history }) => {
       console.log(error);
     }
   };
+  const handleClick = (id) => {
+    history.push("/repairs/" + id);
+  };
 
   return repairs ? (
     <>
       <Row className="row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
         {repairs.map((repair) => (
           <Col key={repair.id}>
-            <RepairCard data={repair} />
+            <RepairCard data={repair} handleClick={handleClick} />
           </Col>
         ))}
       </Row>

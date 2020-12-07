@@ -1,0 +1,23 @@
+
+
+td {
+    font-weight: normal;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+td:hover {
+    cursor: pointer;
+}
+td:first-child {
+    width: 200px
+}
+
+td > img {
+    height: 100px;
+    max-width: 200px;
+
+}
+.buttons {
+    vertical-align: middle !important;
+}
+

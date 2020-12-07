@@ -30,7 +30,7 @@ const TopNav = () => {
                 Home
               </Nav.Link>
               <Nav.Link className="text-white" href="/repairs/create">
-                Request
+                Requests
               </Nav.Link>
               <NavDropdown title={`Hi ${name}!`} id="topnav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Account</NavDropdown.Item>
