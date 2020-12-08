@@ -6,7 +6,8 @@ import api from "../../services/api";
 import "./index.css";
 
 const RepairPage = ({ history }) => {
-  const { isLoggedIn, repairs, setRepairs } = useContext(SessionContext);
+  const { isLoggedIn } = useContext(SessionContext);
+  const [repairs, setRepairs] = useState(null);
   const token = localStorage.getItem("token");
   const user = localStorage.getItem("user");
   const [state, setState] = useState({
@@ -36,16 +37,20 @@ const RepairPage = ({ history }) => {
   };
 
   return repairs ? (
-    <>
-      <Row className="row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
-        {repairs.map((repair) => (
-          <Col key={repair.id}>
-            <RepairCard data={repair} handleClick={handleClick} />
-          </Col>
-        ))}
-      </Row>
-    </>
-  ) : null;
+    <Row className="row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
+      {repairs.map((repair) => (
+        <Col key={repair._id}>
+          <RepairCard data={repair} handleClick={handleClick} />
+        </Col>
+      ))}
+    </Row>
+  ) : (
+    <Row>
+      <Col>
+        <div className="text-center">There are no requests available.</div>
+      </Col>
+    </Row>
+  );
 };
 
 export default RepairPage;

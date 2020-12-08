@@ -8,6 +8,7 @@ import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import RepairItemPage from "./pages/repairItem";
 import MyRequestsPage from "./pages/myRequests/";
+import MyRepairsPage from "./pages/myRepairs/";
 import TopNav from "./components/TopNav.js";
 
 import { ContextWrapper } from "./session-context";
@@ -26,10 +27,12 @@ const Routes = () => {
                   <Route path="/register" exact component={RegisterPage} />
                   <Route path="/" exact component={RepairsPage} />
                   <Route
-                    path="/repairs/create"
+                    path="/user/requests"
                     exact
                     component={MyRequestsPage}
                   />
+                  <Route path="/user/repairs" exact component={MyRepairsPage} />
+
                   <Route path="/repairs/:id" exact component={RepairItemPage} />
                   <Redirect to="/" />
                 </Switch>

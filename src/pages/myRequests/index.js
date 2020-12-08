@@ -1,29 +1,103 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useMemo } from "react";
 import { Row, Col, Button, Table } from "react-bootstrap";
 import { MdAddToQueue } from "react-icons/md";
 import api from "../../services/api";
 import { SessionContext } from "../../session-context";
 import RequestRow from "./components/RequestRow";
+import RequestModal from "./components/RequestModal";
 import "./index.css";
 
 const MyRequestsPage = ({ history }) => {
-  const { isLoggedIn, statusColor } = useContext(SessionContext);
+  const { isLoggedIn } = useContext(SessionContext);
+  const [show, setShow] = useState(false);
   const [requests, setRequests] = useState(null);
+  const [state, setState] = useState({
+    device: "",
+    issue: "",
+    image: null,
+    expedite: "No",
+    hasError: false,
+    errorMessage: "",
+  });
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
     getRepairs();
   }, []);
-
-  const handleClick = (e, id) => {
+  const preview = useMemo(() => {
+    return state.image ? URL.createObjectURL(state.image) : null;
+  }, [state.image]);
+  const handleChange = (event) => {
+    const { value, name, files } = event.target;
+    if (files) return setState({ ...state, [name]: files[0] });
+    setState({ ...state, [name]: value });
+  };
+  const handleClick = (id) => {
     history.push("/repairs/" + id);
   };
-  const handleCancel = (e, id) => {
-    e.stopPropagation();
+  const handleSort = (event) => {
+    const property = event.target.textContent.toLowerCase();
+    const compare = (a, b) => {
+      if (property === "type") {
+        return b.expedite - a.expedite;
+      }
+      if (property === "update") {
+        return new Date(b.lastUpdate) - new Date(a.lastUpdate);
+      }
+      if (a[property].toLowerCase() < b[property].toLowerCase()) return -1;
+      if (a[property].toLowerCase() > b[property].toLowerCase()) return 1;
+      return 0;
+    };
+    const sorted = requests.sort(compare);
+    setRequests([...sorted]);
   };
-  const handleDelete = (e, id) => {
-    e.stopPropagation();
+  const handleSubmit = async () => {
+    const repairData = new FormData();
+
+    try {
+      if (state.device && state.issue && state.image) {
+        repairData.append("device", state.device);
+        repairData.append("customer", user._id);
+        repairData.append("issue", state.issue);
+        repairData.append("image", state.image);
+        repairData.append("expedite", state.expedite);
+        await api.post("/requests/create", repairData, {
+          headers: { "auth-token": token },
+        });
+        setState({
+          device: "",
+          issue: "",
+          image: null,
+          expedite: "No",
+          hasError: false,
+          errorMessage: "",
+        });
+        setShow(false);
+        window.location.reload(true);
+      } else {
+        setState({
+          ...state,
+          success: false,
+          hasError: true,
+          errorMessage: "Missing required information!",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleHide = () => {
+    setState({
+      device: "",
+      issue: "",
+      image: null,
+      expedite: "No",
+      success: false,
+      hasError: false,
+      errorMessage: "",
+    });
+    setShow(false);
   };
   const getRepairs = async () => {
     try {
@@ -37,40 +111,56 @@ const MyRequestsPage = ({ history }) => {
     }
   };
   return (
-    requests && (
-      <Row className="justify-content-between align-items-center">
-        {/* <Button>
-          Create Request <MdAddToQueue />
-        </Button> */}
-        <Col>
-          <Table responsive bordered hover className="text-center table-sm">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Device</th>
-                <th>Issue</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Update</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map((request, index) => (
+    <Row className="justify-content-between align-items-center">
+      <Col>
+        <Button
+          onClick={() => setShow(true)}
+          className="d-block ml-auto mb-2 rounded-pill"
+        >
+          Create New <MdAddToQueue className="ml-1" />
+        </Button>
+        <RequestModal
+          show={show}
+          onHide={handleHide}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          state={state}
+          preview={preview}
+        />
+        <Table
+          striped
+          responsive
+          bordered
+          hover
+          className="text-center table-sm"
+        >
+          <thead>
+            <tr onClick={handleSort}>
+              <th>Device</th>
+              <th>Issue</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requests ? (
+              requests.map((request) => (
                 <RequestRow
                   handleClick={handleClick}
-                  handleCancel={handleCancel}
-                  handleDelete={handleDelete}
-                  key={index}
+                  key={request._id}
                   data={request}
-                  user={user}
                 />
-              ))}
-            </tbody>
-          </Table>
-        </Col>
-      </Row>
-    )
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5">You have no requests.</td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </Col>
+    </Row>
   );
 };
 

@@ -29,9 +29,17 @@ const TopNav = () => {
               <Nav.Link className="text-white" href="/">
                 Home
               </Nav.Link>
-              <Nav.Link className="text-white" href="/repairs/create">
+              <Nav.Link className="text-white" href="/user/requests">
                 Requests
               </Nav.Link>
+              {user.type !== "USER" ? (
+                <Nav.Link className="text-white" href="/user/repairs">
+                  Repairs
+                </Nav.Link>
+              ) : (
+                ""
+              )}
+
               <NavDropdown title={`Hi ${name}!`} id="topnav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Account</NavDropdown.Item>
                 <NavDropdown.Item onClick={signoutHandler}>
