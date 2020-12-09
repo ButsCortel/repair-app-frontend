@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Button } from "react-bootstrap";
 import moment from "moment";
 import { SessionContext } from "../../../session-context";
@@ -12,7 +12,7 @@ const RequestRow = ({ data, handleClick }) => {
   return (
     <tr onClick={() => handleClick(data._id)}>
       <td>
-        <img src={data.image_url} />
+        <img alt="device image" key={data._id} src={data.image_url} />
 
         <div>{data.device}</div>
       </td>
@@ -29,4 +29,4 @@ const RequestRow = ({ data, handleClick }) => {
     </tr>
   );
 };
-export default RequestRow;
+export default React.memo(RequestRow);

@@ -25,7 +25,7 @@ const RepairCard = ({ data, handleClick }) => {
     >
       <Card.Header
         title={data.device}
-        className="text-center mb-1 font-weight-bold "
+        className="device-name text-center mb-1 font-weight-bold "
       >
         {data.device}
       </Card.Header>

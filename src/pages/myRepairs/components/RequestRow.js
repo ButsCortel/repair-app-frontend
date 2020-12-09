@@ -28,4 +28,4 @@ const RequestRow = ({ data, handleClick }) => {
     </tr>
   );
 };
-export default RequestRow;
+export default React.memo(RequestRow);

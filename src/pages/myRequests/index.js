@@ -25,6 +25,7 @@ const MyRequestsPage = ({ history }) => {
     if (!isLoggedIn) return history.push("/login");
     getRepairs();
   }, []);
+
   const preview = useMemo(() => {
     return state.image ? URL.createObjectURL(state.image) : null;
   }, [state.image]);
@@ -49,7 +50,7 @@ const MyRequestsPage = ({ history }) => {
       if (a[property].toLowerCase() > b[property].toLowerCase()) return 1;
       return 0;
     };
-    const sorted = requests.sort(compare);
+    const sorted = [...requests].sort(compare);
     setRequests([...sorted]);
   };
   const handleSubmit = async () => {
@@ -62,19 +63,27 @@ const MyRequestsPage = ({ history }) => {
         repairData.append("issue", state.issue);
         repairData.append("image", state.image);
         repairData.append("expedite", state.expedite);
-        await api.post("/requests/create", repairData, {
-          headers: { "auth-token": token },
-        });
-        setState({
-          device: "",
-          issue: "",
-          image: null,
-          expedite: "No",
-          hasError: false,
-          errorMessage: "",
-        });
-        setShow(false);
-        window.location.reload(true);
+        api
+          .post("/requests/create", repairData, {
+            headers: { "auth-token": token },
+          })
+          .then(
+            (value) => {
+              getRepairs();
+              setShow(false);
+            },
+            (error) => {
+              console.log(error);
+            }
+          );
+        // setState({
+        //   device: "",
+        //   issue: "",
+        //   image: null,
+        //   expedite: "No",
+        //   hasError: false,
+        //   errorMessage: "",
+        // });
       } else {
         setState({
           ...state,
@@ -104,8 +113,7 @@ const MyRequestsPage = ({ history }) => {
       const response = await api.get("/user/requests/", {
         headers: { "auth-token": token },
       });
-
-      setRequests(response.data.repairs);
+      setRequests([...response.data.repairs]);
     } catch (error) {
       console.log(error);
     }
@@ -115,7 +123,7 @@ const MyRequestsPage = ({ history }) => {
       <Col>
         <Button
           onClick={() => setShow(true)}
-          className="d-block ml-auto mb-2 rounded-pill"
+          className="new-request d-block ml-auto mb-2 rounded-pill"
         >
           Create New <MdAddToQueue className="ml-1" />
         </Button>

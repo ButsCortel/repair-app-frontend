@@ -9,6 +9,7 @@ const RequestModal = (props) => {
       size="lg"
       animation={false}
       show={props.show}
+      onHide={props.onHide}
     >
       <Modal.Header closeButton>
         <Modal.Title>New Request</Modal.Title>
@@ -113,4 +114,4 @@ const RequestModal = (props) => {
   );
 };
 
-export default RequestModal;
+export default React.memo(RequestModal);

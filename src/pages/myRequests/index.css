@@ -10,13 +10,17 @@ tr:hover {
     cursor: pointer;
 }
 td:first-child {
-    width: 220px
+    width: 220px !important;
 }
 
 td > img {
     height: 100px !important;
     max-width: 200px !important;
 
+}
+td > div {
+    width: 200px;
+    overflow: auto;
 }
 .buttons {
     vertical-align: middle !important;

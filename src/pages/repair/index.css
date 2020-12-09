@@ -24,3 +24,7 @@
     transform: scale(1.1);
     cursor: pointer;
 }
+.device-name {
+    height: 50px;
+    overflow: auto;
+}
