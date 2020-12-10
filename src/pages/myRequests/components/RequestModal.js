@@ -1,5 +1,13 @@
 import React from "react";
-import { Button, Modal, Container, Row, Col, Form } from "react-bootstrap";
+import {
+  Spinner,
+  Button,
+  Modal,
+  Container,
+  Row,
+  Col,
+  Form,
+} from "react-bootstrap";
 
 const RequestModal = (props) => {
   return (
@@ -28,6 +36,7 @@ const RequestModal = (props) => {
                     value={props.state.device}
                     onChange={props.handleChange}
                     placeholder="device"
+                    disabled={props.state.uploading ? true : false}
                   />
                 </Form.Group>
 
@@ -40,6 +49,7 @@ const RequestModal = (props) => {
                     onChange={props.handleChange}
                     placeholder="issue/description"
                     rows={4}
+                    disabled={props.state.uploading ? true : false}
                   />
                 </Form.Group>
 
@@ -58,6 +68,7 @@ const RequestModal = (props) => {
                     value="Yes"
                     checked={props.state.expedite === "Yes"}
                     onChange={props.handleChange}
+                    disabled={props.state.uploading ? true : false}
                   />
                   <label htmlFor="Yes" className="mr-3">
                     Yes
@@ -70,6 +81,7 @@ const RequestModal = (props) => {
                     value="No"
                     checked={props.state.expedite === "No"}
                     onChange={props.handleChange}
+                    disabled={props.state.uploading ? true : false}
                   />
                   <label htmlFor="No" className="mr-3">
                     No
@@ -78,6 +90,13 @@ const RequestModal = (props) => {
                 <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
                   {props.state.hasError ? props.state.errorMessage : ""}
                 </Form.Text>
+                <div className="d-flex justify-content-center">
+                  {props.state.uploading ? (
+                    <Spinner className="text-center" animation="border" />
+                  ) : (
+                    ""
+                  )}
+                </div>
               </Form>
             </Col>
             <Col md={12} lg={6}>
@@ -97,6 +116,7 @@ const RequestModal = (props) => {
                     }
                     required
                     accept=".png,.jpg,.jpeg"
+                    disabled={props.state.uploading ? true : false}
                   />
                 </Form.Group>
               </Form>
@@ -105,8 +125,17 @@ const RequestModal = (props) => {
         </Container>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.handleSubmit}>Submit</Button>
-        <Button variant="danger" onClick={props.onHide}>
+        <Button
+          disabled={props.state.uploading ? true : false}
+          onClick={props.handleSubmit}
+        >
+          Submit
+        </Button>
+        <Button
+          disabled={props.state.uploading ? true : false}
+          variant="danger"
+          onClick={props.onHide}
+        >
           Cancel
         </Button>
       </Modal.Footer>

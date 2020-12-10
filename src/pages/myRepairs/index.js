@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Row, Col, Button, Table } from "react-bootstrap";
-import { MdAddToQueue } from "react-icons/md";
+import { Row, Col, Spinner } from "react-bootstrap";
 import api from "../../services/api";
 import { SessionContext } from "../../session-context";
 import RequestRow from "./components/RequestRow";
@@ -9,6 +8,7 @@ import "./index.css";
 const MyRepairsPage = ({ history }) => {
   const { isLoggedIn } = useContext(SessionContext);
   const [requests, setRequests] = useState(null);
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
@@ -37,52 +37,56 @@ const MyRepairsPage = ({ history }) => {
     setRequests([...sorted]);
   };
   const getRepairs = async () => {
+    setLoading(true);
     try {
       const response = await api.get("/tech/requests/", {
         headers: { "auth-token": token },
       });
 
       setRequests(response.data.repairs);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
   return (
-    <Row className="justify-content-between align-items-center">
-      <Col>
-        <Table
-          striped
-          responsive
-          bordered
-          hover
-          className="text-center table-sm"
-        >
-          <thead>
-            <tr onClick={handleSort}>
-              <th>Device</th>
-              <th>Issue</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Update</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests ? (
-              requests.map((request) => (
-                <RequestRow
-                  handleClick={handleClick}
-                  key={request._id}
-                  data={request}
-                  user={user}
-                />
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5">You have no repairs.</td>
+    <Row className="flex-column h-100">
+      <Col className="col-table flex-grow-1">
+        <div className="table-responsive h-100 w-100">
+          <table className="table table-hover text-center mw-100">
+            <thead>
+              <tr onClick={handleSort}>
+                <th>Device</th>
+                <th>Issue</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Update</th>
               </tr>
-            )}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {requests && !loading ? (
+                requests.map((request) => (
+                  <RequestRow
+                    handleClick={handleClick}
+                    key={request._id}
+                    data={request}
+                  />
+                ))
+              ) : loading ? (
+                <tr>
+                  <td colSpan="5">
+                    <Spinner animation="border" />
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <td colSpan="5">You have no requests.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </Col>
     </Row>
   );

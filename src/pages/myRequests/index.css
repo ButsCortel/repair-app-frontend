@@ -1,16 +1,30 @@
-
-
-td {
-    font-weight: normal;
-    overflow-x: hidden;
+.col-table {
+    min-height: 0;
+    min-width: 0;
+}
+.table-responsive {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
     overflow-y: auto;
-    height: 135px;
+    overflow-x: hidden;
 }
-tr:hover {
-    cursor: pointer;
+table { 
+    table-layout: fixed;
+    width: 100%;
 }
-td:first-child {
-    width: 220px !important;
+
+th {
+    background: white;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+td span{
+    display: block;
+    overflow-wrap: break-word;
+    overflow-y: auto;
+    height: 130px !important;
 }
 
 td > img {
@@ -18,11 +32,3 @@ td > img {
     max-width: 200px !important;
 
 }
-td > div {
-    width: 200px;
-    overflow: auto;
-}
-.buttons {
-    vertical-align: middle !important;
-}
-

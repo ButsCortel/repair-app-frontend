@@ -1,7 +1,15 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { SessionContext } from "../../session-context";
-import { Container, Row, Col, Badge, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Badge,
+  Button,
+  Form,
+  Spinner,
+} from "react-bootstrap";
 import api from "../../services/api";
 import moment from "moment";
 import "./index.css";
@@ -34,14 +42,22 @@ const RequestItemPage = ({ history }) => {
         { headers: { "auth-token": token } }
       );
       setState({
-        status: "",
-        note: "",
-        repairId: "",
+        ...state,
         success: true,
         hasError: false,
         errorMessage: "",
       });
-      setTimeout(() => window.location.reload(), 2000);
+      setTimeout(() => {
+        getRepair();
+        setState({
+          status: "",
+          note: "",
+          repairId: "",
+          success: false,
+          hasError: false,
+          errorMessage: "",
+        });
+      }, 2000);
     } catch (error) {
       setState({
         ...state,
@@ -56,13 +72,12 @@ const RequestItemPage = ({ history }) => {
       const response = await api.get("/requests/" + id, {
         headers: { "auth-token": token },
       });
-      console.log(user);
-      setRepair(response.data);
+      console.log(response.data);
+      setRepair(response.data.repair);
     } catch (error) {
       console.log(error);
     }
   };
-  let mounted;
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
     getRepair();
@@ -79,10 +94,9 @@ const RequestItemPage = ({ history }) => {
           <div className="product-img d-table-cell d-sm-block">
             <img className="mh-100 mw-100" src={repair.image_url} />
           </div>
-        </Col>
-        <Col md={12} lg={6}>
+          <h4>{repair.device}</h4>
+
           <Container className="details-body text-left">
-            <h4>{repair.device}</h4>
             <div className="text-left">
               <Badge variant={statusColor(repair.status)}>
                 {repair.status}
@@ -94,41 +108,38 @@ const RequestItemPage = ({ history }) => {
                 {repair.expedite ? "EXPEDITE" : "REGULAR"}
               </Badge>
             </div>
-            <Row>
-              <Col>
-                <ul>
-                  <li>Created</li>
-                  <li>{newDate(repair.dateCreated)}</li>
-                  <li>Requestor</li>
-                  <li className="li-container position-relative">
-                    {repair.customer.firstName} {repair.customer.lastName}
-                    <a
-                      className="email"
-                      href={`mailto:${repair.customer.email}`}
-                    >
-                      {repair.customer.email}
-                    </a>
-                  </li>
-                </ul>
-              </Col>
-              <Col>
-                <ul>
-                  <li>Updated</li>
-                  <li>{newDate(repair.lastUpdate)}</li>
-                  <li>Last User</li>
-                  <li className="li-container position-relative">
-                    {repair.user.firstName} {repair.user.lastName}
-                    <a className="email" href={`mailto:${repair.user.email}`}>
-                      {repair.user.email}
-                    </a>
-                  </li>
-                </ul>
-              </Col>
-            </Row>
+            <div className="d-flex justify-content-between">
+              <ul className="mb-0">
+                <li>Created</li>
+                <li>{newDate(repair.dateCreated)}</li>
+                <li>Requestor</li>
+                <li className="li-container position-relative">
+                  {repair.customer.firstName} {repair.customer.lastName}
+                  <a className="email" href={`mailto:${repair.customer.email}`}>
+                    {repair.customer.email}
+                  </a>
+                </li>
+              </ul>
+              <ul className="mb-0">
+                <li>Updated</li>
+                <li>{newDate(repair.lastUpdate)}</li>
+                <li>Last User</li>
+                <li className="li-container position-relative">
+                  {repair.user.firstName} {repair.user.lastName}
+                  <a className="email" href={`mailto:${repair.user.email}`}>
+                    {repair.user.email}
+                  </a>
+                </li>
+              </ul>
+            </div>
             <ul>
               <li>Issue/Description</li>
-              <li className="issue overflow-auto">{repair.issue}</li>
+              <li className="issue">{repair.issue}</li>
             </ul>
+          </Container>
+        </Col>
+        <Col md={12} lg={6}>
+          <Container className="details-body text-left">
             <Row className="justify-content-center">
               <Col>
                 <Form onSubmit={handleSubmit}>
@@ -197,21 +208,22 @@ const RequestItemPage = ({ history }) => {
                       value={state.note}
                       rows={3}
                       onChange={handleChange}
-                      disabled={!state.status}
+                      disabled={!state.status || state.success}
                       required
                     />
                     <div className="d-flex justify-content-end mt-2">
+                      {state.success ? <Spinner animation="border" /> : ""}
                       <Button
                         type="submit"
                         className="mx-1 w-25"
-                        disabled={!state.status || !state.note}
+                        disabled={!state.status || !state.note || state.success}
                       >
                         Submit
                       </Button>
                       <Button
                         variant="danger"
                         className="mx-2 w-25"
-                        disabled={!state.status || !state.note}
+                        disabled={!state.status || !state.note || state.success}
                       >
                         Cancel
                       </Button>
@@ -219,9 +231,6 @@ const RequestItemPage = ({ history }) => {
                   </Form.Group>
                   <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
                     {state.hasError ? state.errorMessage : ""}
-                  </Form.Text>
-                  <Form.Text className="status font-weight-bold position-absolute text-success text-center">
-                    {state.success ? "Request updated! Loading..." : ""}
                   </Form.Text>
                 </Form>
               </Col>

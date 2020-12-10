@@ -15,7 +15,9 @@ const RequestRow = ({ data, handleClick }) => {
         <img src={data.image_url} />
         <div>{data.device}</div>
       </td>
-      <td>{data.issue}</td>
+      <td>
+        <span>{data.issue}</span>
+      </td>
       <td className={data.expedite ? "text-danger font-weight-bold" : ""}>
         {data.expedite ? "EXPEDITE" : "Regular"}
       </td>

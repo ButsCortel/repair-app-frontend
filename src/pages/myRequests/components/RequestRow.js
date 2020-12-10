@@ -16,7 +16,9 @@ const RequestRow = ({ data, handleClick }) => {
 
         <div>{data.device}</div>
       </td>
-      <td>{data.issue}</td>
+      <td>
+        <span>{data.issue}</span>
+      </td>
       <td className={data.expedite ? "text-danger font-weight-bold" : ""}>
         {data.expedite ? "EXPEDITE" : "Regular"}
       </td>

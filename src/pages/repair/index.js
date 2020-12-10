@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { SessionContext } from "../../session-context";
-import { Row, Col, CardDeck } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
 import RepairCard from "./components/RepairCard";
 import api from "../../services/api";
 import "./index.css";
@@ -9,12 +9,7 @@ const RepairPage = ({ history }) => {
   const { isLoggedIn } = useContext(SessionContext);
   const [repairs, setRepairs] = useState(null);
   const token = localStorage.getItem("token");
-  const user = localStorage.getItem("user");
-  const [state, setState] = useState({
-    hasError: false,
-    errorMessage: "",
-    success: false,
-  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
@@ -23,12 +18,15 @@ const RepairPage = ({ history }) => {
   }, []);
 
   const getRepairs = async () => {
+    setLoading(true);
     try {
       const response = await api.get("/requests/all", {
         headers: { "auth-token": token },
       });
       setRepairs(response.data.repairs);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -36,7 +34,7 @@ const RepairPage = ({ history }) => {
     history.push("/repairs/" + id);
   };
 
-  return repairs ? (
+  return !loading && repairs ? (
     <Row className="row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
       {repairs.map((repair) => (
         <Col key={repair._id}>
@@ -44,10 +42,18 @@ const RepairPage = ({ history }) => {
         </Col>
       ))}
     </Row>
+  ) : loading ? (
+    <Row>
+      <Col>
+        <div className="text-center">
+          <Spinner animation="border" />
+        </div>
+      </Col>
+    </Row>
   ) : (
     <Row>
       <Col>
-        <div className="text-center">There are no requests available.</div>
+        <div className="text-center">No available data to show.</div>
       </Col>
     </Row>
   );

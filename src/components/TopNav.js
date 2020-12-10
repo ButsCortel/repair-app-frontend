@@ -27,7 +27,7 @@ const TopNav = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
               <Nav.Link className="text-white" href="/">
-                Home
+                Queue
               </Nav.Link>
               <Nav.Link className="text-white" href="/user/requests">
                 Requests

@@ -1,5 +1,5 @@
 .product-img {
-    height: 300px;
+    height: 270px;
     width: 480px;
     margin: 0 auto;
     vertical-align: middle;
@@ -32,8 +32,9 @@ li.li-container:hover a.email {
     background-color: white;
 }
 .issue {
-    height: 75px;
-    padding: 3px;
+    overflow-wrap: break-word;
+    overflow-y: auto !important;
+    max-height: 70px !important;
 }
 
 .tech-button button{
