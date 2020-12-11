@@ -12,12 +12,14 @@ import {
 } from "react-bootstrap";
 import api from "../../services/api";
 import moment from "moment";
+import HistoryRow from "./Components/HistoryRow";
 import "./index.css";
 const RequestItemPage = ({ history }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   const { isLoggedIn, statusColor } = useContext(SessionContext);
   const [repair, setRepair] = useState(null);
+  const [transactions, setTransactions] = useState(null);
   const { id } = useParams();
   const [state, setState] = useState({
     status: "",
@@ -74,6 +76,9 @@ const RequestItemPage = ({ history }) => {
       });
       console.log(response.data);
       setRepair(response.data.repair);
+      const { history } = response.data;
+      if (history) return setTransactions(history.reverse());
+      setTransactions(response.data.history);
     } catch (error) {
       console.log(error);
     }
@@ -85,18 +90,18 @@ const RequestItemPage = ({ history }) => {
 
   const newDate = (date) => {
     const original = moment(date);
-    return original.format("MMM Do YYYY, h:mm:ss a");
+    return original.format("MMM DD YYYY, h:mm:ss a");
   };
   return !repair ? null : (
     <>
-      <Row className="text-center justify-content-between align-items-start mh-100">
+      <Row className="repair-item-row text-center justify-content-between align-items-stretch h-100">
         <Col md={12} lg={6}>
-          <div className="product-img d-table-cell d-sm-block">
+          <div className="product-img-repairItem d-table-cell d-sm-block">
             <img className="mh-100 mw-100" src={repair.image_url} />
           </div>
           <h4>{repair.device}</h4>
 
-          <Container className="details-body text-left">
+          <Container className="details-body-repairItem text-left">
             <div className="text-left">
               <Badge variant={statusColor(repair.status)}>
                 {repair.status}
@@ -134,16 +139,16 @@ const RequestItemPage = ({ history }) => {
             </div>
             <ul>
               <li>Issue/Description</li>
-              <li className="issue">{repair.issue}</li>
+              <li className="issue-repairItem">{repair.issue}</li>
             </ul>
           </Container>
         </Col>
         <Col md={12} lg={6}>
-          <Container className="details-body text-left">
-            <Row className="justify-content-center">
-              <Col>
+          <Container className="h-100">
+            <Row className="transactions-row flex-column pt-0 mh-100">
+              <Col className="flex-grow-0">
                 <Form onSubmit={handleSubmit}>
-                  <Form.Group controlId="status">
+                  <Form.Group className="text-left" controlId="status">
                     <Form.Control
                       name="status"
                       value={state.status}
@@ -233,6 +238,30 @@ const RequestItemPage = ({ history }) => {
                     {state.hasError ? state.errorMessage : ""}
                   </Form.Text>
                 </Form>
+              </Col>
+              <Col className="col-table-repairItem flex-grow-1">
+                {/* <h5>Previous Transactions</h5> */}
+                <div className="table-div-repairItem">
+                  <table className="table repairItem text-center">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Status</th>
+                        <th>Note</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transactions ? (
+                        transactions.map((data) => (
+                          <HistoryRow key={data._id} data={data} />
+                        ))
+                      ) : (
+                        <></>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </Col>
             </Row>
           </Container>

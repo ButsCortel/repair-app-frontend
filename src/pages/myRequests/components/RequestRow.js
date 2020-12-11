@@ -14,7 +14,7 @@ const RequestRow = ({ data, handleClick }) => {
       <td>
         <img alt="device image" key={data._id} src={data.image_url} />
 
-        <div>{data.device}</div>
+        <span>{data.device}</span>
       </td>
       <td>
         <span>{data.issue}</span>

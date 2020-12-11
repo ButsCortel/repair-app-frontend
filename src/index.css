@@ -13,7 +13,6 @@ html {
 body {
     height: 100%; 
     font-family: 'Arvo', serif;
-    font-weight: bold;
     position: relative;
     
 }
@@ -28,6 +27,7 @@ body {
     min-height: 56px;
 }
 nav.navbar {
+    font-weight: bold;
     position: fixed;
     top: 0;
     height: 56px;
@@ -57,7 +57,9 @@ div.dropdown-menu.show {
 
 div.h-100 > .row:not(.login):not(.register) {
     padding-top: 70px;
+    padding-bottom: 10px;
 }
+
 .status {
     white-space: nowrap;
     left: 50%;

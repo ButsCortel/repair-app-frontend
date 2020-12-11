@@ -13,7 +13,7 @@ const RequestRow = ({ data, handleClick }) => {
     <tr onClick={() => handleClick(data._id)}>
       <td>
         <img src={data.image_url} />
-        <div>{data.device}</div>
+        <span>{data.device}</span>
       </td>
       <td>
         <span>{data.issue}</span>

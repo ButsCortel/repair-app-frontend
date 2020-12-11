@@ -1,18 +1,11 @@
-.col-table {
+.col-table-myRequests {
     min-height: 0;
     min-width: 0;
 }
-.table-responsive {
-    display: flex;
-    flex-direction: row;
-    flex-grow: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+.table-div-myRequests {
+    overflow-y: auto
 }
-table { 
-    table-layout: fixed;
-    width: 100%;
-}
+
 
 th {
     background: white;
@@ -20,15 +13,32 @@ th {
     top: 0;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
+th:hover {
+    cursor: pointer;
+}
+td:first-child span {
+    display: block;
+    overflow-wrap: break-word;
+    overflow-y: auto;
+    height: 24px !important;  
+}
 td span{
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
-    height: 130px !important;
+    max-height: 130px !important;
 }
+
 
 td > img {
     height: 100px !important;
     max-width: 200px !important;
 
+}
+
+@media (min-width: 992px) { 
+    table.myRequests { 
+        table-layout: fixed;
+    
+    }
 }

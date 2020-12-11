@@ -1,13 +1,15 @@
-.product-img {
+.col-table-repairItem {
+    min-height: 0;
+}
+.product-img-repairItem {
     height: 270px;
     width: 480px;
     margin: 0 auto;
     vertical-align: middle;
     display: block;
 }
-.details-body {
-    font-weight: normal;
-    
+.details-body-repairItem {
+    font-weight: normal;    
 }
 ul{
     list-style: none;
@@ -19,19 +21,19 @@ ul li:nth-child(odd){
 
 a.email {
     position: absolute;
-    top: 100%;
+    top: 50%;
     left: 0;
     display: none;
 }
-
-li.li-container:hover a.email {
+li.li-container:hover a.email, td:hover a.email {
     display: inline;
     border: gray 1px solid;
     border-radius: 5px;
     padding: 3px;
     background-color: white;
+    z-index: 1;
 }
-.issue {
+.issue-repairItem {
     overflow-wrap: break-word;
     overflow-y: auto !important;
     max-height: 70px !important;
@@ -40,3 +42,34 @@ li.li-container:hover a.email {
 .tech-button button{
     margin: 0 3px;
 }
+.table-div-repairItem {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.table-div-repairItem table{
+    table-layout: fixed;
+}
+
+th {
+    background: white;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+th:hover {
+    cursor: pointer;
+}
+.transactions-row {
+    height: 100%;
+}
+td.repairItem span{
+    display: block;
+    overflow-wrap: break-word;
+    overflow-y: auto;
+    height: 75px !important
+    
+}
+@media (min-width: 992px) { .table-div-repairItem {
+    max-height: 260px;
+} }

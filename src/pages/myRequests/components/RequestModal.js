@@ -33,7 +33,7 @@ const RequestModal = (props) => {
                     required
                     name="device"
                     type="text"
-                    value={props.state.device}
+                    value={props.form.device}
                     onChange={props.handleChange}
                     placeholder="device"
                     disabled={props.state.uploading ? true : false}
@@ -45,7 +45,7 @@ const RequestModal = (props) => {
                     as="textarea"
                     required
                     name="issue"
-                    value={props.state.issue}
+                    value={props.form.issue}
                     onChange={props.handleChange}
                     placeholder="issue/description"
                     rows={4}
@@ -54,7 +54,7 @@ const RequestModal = (props) => {
                 </Form.Group>
 
                 <Form.Group
-                  value={props.state.expedite}
+                  value={props.form.expedite}
                   onChange={props.handleChange}
                   controlId="expedite"
                   className="text-center"
@@ -66,7 +66,7 @@ const RequestModal = (props) => {
                     type="radio"
                     className="ml-3"
                     value="Yes"
-                    checked={props.state.expedite === "Yes"}
+                    checked={props.form.expedite === "Yes"}
                     onChange={props.handleChange}
                     disabled={props.state.uploading ? true : false}
                   />
@@ -79,7 +79,7 @@ const RequestModal = (props) => {
                     type="radio"
                     className="ml-3"
                     value="No"
-                    checked={props.state.expedite === "No"}
+                    checked={props.form.expedite === "No"}
                     onChange={props.handleChange}
                     disabled={props.state.uploading ? true : false}
                   />

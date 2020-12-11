@@ -10,12 +10,14 @@ import "./index.css";
 const MyRequestsPage = ({ history }) => {
   const { isLoggedIn } = useContext(SessionContext);
   const [show, setShow] = useState(false);
-  const [requests, setRequests] = useState(null);
-  const [state, setState] = useState({
+  const [form, setForm] = useState({
     device: "",
     issue: "",
     image: null,
     expedite: "No",
+  });
+  const [requests, setRequests] = useState(null);
+  const [state, setState] = useState({
     hasError: false,
     errorMessage: "",
     uploading: false,
@@ -29,12 +31,12 @@ const MyRequestsPage = ({ history }) => {
   }, []);
 
   const preview = useMemo(() => {
-    return state.image ? URL.createObjectURL(state.image) : null;
-  }, [state.image]);
+    return form.image ? URL.createObjectURL(form.image) : null;
+  }, [form.image]);
   const handleChange = (event) => {
     const { value, name, files } = event.target;
-    if (files) return setState({ ...state, [name]: files[0] });
-    setState({ ...state, [name]: value });
+    if (files) return setForm({ ...form, [name]: files[0] });
+    setForm({ ...form, [name]: value });
   };
   const handleClick = (id) => {
     history.push("/repairs/" + id);
@@ -61,14 +63,14 @@ const MyRequestsPage = ({ history }) => {
     const repairData = new FormData();
 
     try {
-      if (state.device && state.issue && state.image) {
-        repairData.append("device", state.device);
+      if (form.device && form.issue && form.image) {
+        repairData.append("device", form.device);
         repairData.append("customer", user._id);
-        repairData.append("issue", state.issue);
-        repairData.append("image", state.image);
-        repairData.append("expedite", state.expedite);
+        repairData.append("issue", form.issue);
+        repairData.append("image", form.image);
+        repairData.append("expedite", form.expedite);
         setState({
-          ...state,
+          loading: false,
           hasError: false,
           uploading: true,
           errorMessage: "",
@@ -80,16 +82,19 @@ const MyRequestsPage = ({ history }) => {
           .then(
             (value) => {
               setState({
-                ...state,
+                hasError: false,
+                errorMessage: "",
                 uploading: false,
+                loading: false,
               });
               getRepairs();
               setShow(false);
+              setForm({ device: "", issue: "", image: null, expedite: "No" });
             },
             (error) => {
               console.log(error);
               setState({
-                ...state,
+                loading: false,
                 uploading: false,
                 hasError: true,
                 errorMessage: "Upload error!",
@@ -98,27 +103,30 @@ const MyRequestsPage = ({ history }) => {
           );
       } else {
         setState({
-          ...state,
+          loading: false,
           uploading: false,
           hasError: true,
           errorMessage: "Missing required information!",
         });
       }
     } catch (error) {
+      setState({
+        loading: false,
+        uploading: false,
+        hasError: true,
+        errorMessage: "Server error!",
+      });
       console.log(error);
     }
   };
   const handleHide = () => {
     setState({
-      device: "",
-      issue: "",
-      image: null,
-      expedite: "No",
       uploading: false,
       hasError: false,
       errorMessage: "",
-      loading: true,
+      loading: false,
     });
+    setForm({ device: "", issue: "", image: null, expedite: "No" });
     setShow(false);
   };
   const getRepairs = async () => {
@@ -149,13 +157,14 @@ const MyRequestsPage = ({ history }) => {
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           state={state}
+          form={form}
           preview={preview}
         />
       </Col>
 
-      <Col className="col-table flex-grow-1">
-        <div className="table-responsive h-100">
-          <table className="table table-hover text-center">
+      <Col className="col-table-myRequests flex-grow-1">
+        <div className="table-div-myRequests table-responsive-lg h-100">
+          <table className="table myRequests table-hover text-center">
             <thead>
               <tr onClick={handleSort}>
                 <th>Device</th>

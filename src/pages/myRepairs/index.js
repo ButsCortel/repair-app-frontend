@@ -52,9 +52,9 @@ const MyRepairsPage = ({ history }) => {
   };
   return (
     <Row className="flex-column h-100">
-      <Col className="col-table flex-grow-1">
-        <div className="table-responsive h-100 w-100">
-          <table className="table table-hover text-center mw-100">
+      <Col className="col-table-myRepairs flex-grow-1">
+        <div className="table-div-myRepairs table-responsive-lg h-100">
+          <table className="table myRepairs table-hover text-center">
             <thead>
               <tr onClick={handleSort}>
                 <th>Device</th>
