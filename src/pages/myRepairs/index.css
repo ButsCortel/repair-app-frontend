@@ -15,22 +15,25 @@ th {
     top: 0;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
-th:hover {
+th:hover, tr.tr-myRepairs {
     cursor: pointer;
 }
-td:first-child span {
+
+.tr-myRepairs td:first-child span {
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
     height: 24px !important;  
 }
-td span{
+.tr-myRepairs td span{
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
     max-height: 130px !important;
 }
-td > img {
+.tr-myRepairs td > img {
+    display: block;
+    margin: 0 auto;
     height: 100px !important;
     max-width: 200px !important;
 

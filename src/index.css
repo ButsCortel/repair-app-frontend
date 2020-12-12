@@ -12,6 +12,7 @@ html {
 }
 body {
     height: 100%; 
+   width: 100%;
     font-family: 'Arvo', serif;
     position: relative;
     
@@ -32,7 +33,8 @@ nav.navbar {
     top: 0;
     height: 56px;
     z-index: 5;
-    min-width: 100vw;   
+    min-width: 100vw; 
+    background-color: brown;  
 }
 
 
@@ -55,7 +57,7 @@ div.dropdown-menu.show {
 }
 
 
-div.h-100 > .row:not(.login):not(.register) {
+div.h-100 > .row:first-child:not(.register) {
     padding-top: 70px;
     padding-bottom: 10px;
 }

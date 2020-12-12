@@ -13,16 +13,16 @@ th {
     top: 0;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
-th:hover {
+th:hover, tr.tr-myRequests td {
     cursor: pointer;
 }
-td:first-child span {
+.tr-myRequests td:first-child span {
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
     height: 24px !important;  
 }
-td span{
+.tr-myRequests td span{
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
@@ -30,9 +30,9 @@ td span{
 }
 
 
-td > img {
-    height: 100px !important;
-    max-width: 200px !important;
+.tr-myRequests td > img {
+    max-height: 100px !important;
+    max-width: 100% !important;
 
 }
 

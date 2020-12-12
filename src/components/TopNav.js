@@ -20,7 +20,7 @@ const TopNav = () => {
 
   return isLoggedIn ? (
     <>
-      <Navbar bg="warning" variant="dark" expand="lg" className="text-white">
+      <Navbar variant="dark" expand="lg" className="text-white">
         <Container>
           <Navbar.Brand href="/">Repair</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

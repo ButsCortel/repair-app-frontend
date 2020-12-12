@@ -3,7 +3,7 @@ import moment from "moment";
 const HistoryRow = (props) => {
   const newDate = (date) => {
     const original = moment(date);
-    return original.format("MM/DD/YYYY, h:mm:ss a");
+    return original.format("MM/DD/ YYYY, h:mm:ss a");
   };
   return (
     <tr>

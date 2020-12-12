@@ -10,7 +10,7 @@ const RequestRow = ({ data, handleClick }) => {
     return original.format("l, h:mm a");
   };
   return (
-    <tr onClick={() => handleClick(data._id)}>
+    <tr className="tr-myRequests" onClick={() => handleClick(data._id)}>
       <td>
         <img alt="device image" key={data._id} src={data.image_url} />
 

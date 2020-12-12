@@ -1,31 +1,46 @@
-import React, { useContext } from "react";
-import { Button } from "react-bootstrap";
+import React, { useContext, useEffect, useState } from "react";
 import moment from "moment";
 import { SessionContext } from "../../../session-context";
+const missing = require("../../../assets/no_image.png");
+console.log(missing);
 
 const RequestRow = ({ data, handleClick }) => {
   const { statusColor } = useContext(SessionContext);
+  const [src, setSrc] = useState("");
+
+  // useEffect(() => {
+  //   !data.repair
+  //     ? setSrc(require("../../../assets/no_image.png"))
+  //     : setSrc(data.repair.image_url);
+  // }, []);
+
   const newDate = (date) => {
     const original = moment(date);
     return original.format("l, h:mm a");
   };
   return (
-    <tr onClick={() => handleClick(data._id)}>
+    <tr
+      className="tr-myRepairs"
+      disabled
+      onClick={data.repair && (() => handleClick(data.repair._id))}
+      title={!data.repair ? "Request has been deleted" : ""}
+    >
       <td>
-        <img src={data.image_url} />
+        <img
+          src={
+            data.repair
+              ? data.repair.image_url
+              : require("../../../assets/no_image.png").default
+          }
+        />
         <span>{data.device}</span>
       </td>
-      <td>
-        <span>{data.issue}</span>
-      </td>
-      <td className={data.expedite ? "text-danger font-weight-bold" : ""}>
-        {data.expedite ? "EXPEDITE" : "Regular"}
-      </td>
+      <td>{newDate(data.date)}</td>
       <td className={`font-weight-bold text-${statusColor(data.status)}`}>
         {data.status}
       </td>
-      <td title={newDate(data.lastUpdate)}>
-        {moment(data.lastUpdate).fromNow()}
+      <td>
+        <span>{data.note}</span>
       </td>
     </tr>
   );

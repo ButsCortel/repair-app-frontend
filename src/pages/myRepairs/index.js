@@ -57,11 +57,10 @@ const MyRepairsPage = ({ history }) => {
           <table className="table myRepairs table-hover text-center">
             <thead>
               <tr onClick={handleSort}>
-                <th>Device</th>
-                <th>Issue</th>
-                <th>Type</th>
+                <th>Request</th>
+                <th>Date</th>
                 <th>Status</th>
-                <th>Update</th>
+                <th>Note</th>
               </tr>
             </thead>
             <tbody>

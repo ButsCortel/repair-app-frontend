@@ -38,28 +38,37 @@ const RequestItemPage = ({ history }) => {
     const { status, note } = state;
     if (!status || !note) return alert("Missing information!");
     try {
-      const response = await api.put(
-        "/requests/" + repair._id,
-        { status, note },
-        { headers: { "auth-token": token } }
-      );
       setState({
         ...state,
         success: true,
         hasError: false,
         errorMessage: "",
       });
-      setTimeout(() => {
-        getRepair();
-        setState({
-          status: "",
-          note: "",
-          repairId: "",
-          success: false,
-          hasError: false,
-          errorMessage: "",
+      if (status === "DELETE") {
+        return api
+          .delete("/requests/delete/" + repair._id, {
+            headers: { "auth-token": token },
+          })
+          .then((res) => history.push("/"));
+      }
+
+      api
+        .put(
+          "/requests/" + repair._id,
+          { status, note },
+          { headers: { "auth-token": token } }
+        )
+        .then((data) => {
+          getRepair();
+          setState({
+            status: "",
+            note: "",
+            repairId: "",
+            success: false,
+            hasError: false,
+            errorMessage: "",
+          });
         });
-      }, 2000);
     } catch (error) {
       setState({
         ...state,
@@ -92,56 +101,136 @@ const RequestItemPage = ({ history }) => {
     const original = moment(date);
     return original.format("MMM DD YYYY, h:mm:ss a");
   };
+  const options = (customer, status) => {
+    if (user.type === "USER" && customer === user._id) {
+      return (
+        <>
+          <option
+            disabled={status === "OUTGOING" || status === "COMPLETED"}
+            value="CANCELLED"
+          >
+            CANCEL
+          </option>
+          <option
+            disabled={status === "OUTGOING" || status === "COMPLETED"}
+            value="DELETE"
+          >
+            DELETE
+          </option>
+        </>
+      );
+    }
+    if (user.type === "TECH") {
+      return (
+        <>
+          <option
+            className={status !== "INCOMING" ? "hidden" : ""}
+            value="RECEIVED"
+          >
+            RECEIVED
+          </option>
+          <option
+            className={
+              status !== "RECEIVED" && status !== "ON HOLD" ? "hidden" : ""
+            }
+            value="ONGOING"
+          >
+            ONGOING
+          </option>
+          <option
+            className={status !== "ONGOING" ? "hidden" : ""}
+            value="ON HOLD"
+          >
+            ON HOLD
+          </option>
+          <option
+            className={
+              status !== "ON HOLD" && status !== "ONGOING" ? "hidden" : ""
+            }
+            value="OUTGOING"
+          >
+            OUTGOING
+          </option>
+          <option
+            className={status !== "OUTGOING" ? "hidden" : ""}
+            value="COMPLETED"
+          >
+            COMPLETED
+          </option>
+        </>
+      );
+    }
+    return (
+      <>
+        <option value="RECEIVED">RECEIVED</option>
+        <option value="ONGOING">ONGOING</option>
+        <option value="ON HOLD">ON HOLD</option>
+        <option value="OUTGOING">OUTGOING</option>
+        <option value="COMPLETED">COMPLETED</option>
+        <option value="CANCELLED">CANCEL</option>
+        <option value="DELETE">DELETE</option>
+      </>
+    );
+  };
   return !repair ? null : (
     <>
-      <Row className="repair-item-row text-center justify-content-between align-items-stretch h-100">
+      <Row className="repair-item-row text-center justify-content-between align-items-stretch  h-100">
         <Col md={12} lg={6}>
-          <div className="product-img-repairItem d-table-cell d-sm-block">
-            <img className="mh-100 mw-100" src={repair.image_url} />
-          </div>
-          <h4>{repair.device}</h4>
+          <div className="repair-item-info d-flex flex-column">
+            <div className="product-img-repairItem d-flex justify-content-center align-items-center mw-100">
+              <img className="mh-100 mw-100" src={repair.image_url} />
+            </div>
+            <h4>{repair.device}</h4>
 
-          <Container className="details-body-repairItem text-left">
-            <div className="text-left">
-              <Badge variant={statusColor(repair.status)}>
-                {repair.status}
-              </Badge>
-              <Badge
-                className="ml-1"
-                variant={repair.expedite ? "danger" : "primary"}
-              >
-                {repair.expedite ? "EXPEDITE" : "REGULAR"}
-              </Badge>
-            </div>
-            <div className="d-flex justify-content-between">
-              <ul className="mb-0">
-                <li>Created</li>
-                <li>{newDate(repair.dateCreated)}</li>
-                <li>Requestor</li>
-                <li className="li-container position-relative">
-                  {repair.customer.firstName} {repair.customer.lastName}
-                  <a className="email" href={`mailto:${repair.customer.email}`}>
-                    {repair.customer.email}
-                  </a>
-                </li>
+            <Container className="details-body-repairItem text-left">
+              <div className="text-left">
+                <Badge variant={statusColor(repair.status)}>
+                  {repair.status}
+                </Badge>
+                <Badge
+                  className="ml-1"
+                  variant={repair.expedite ? "danger" : "primary"}
+                >
+                  {repair.expedite ? "EXPEDITE" : "REGULAR"}
+                </Badge>
+              </div>
+              <div className="d-flex flex-column flex-sm-row justify-content-between mh-100">
+                <ul className="mb-0">
+                  <li>Created</li>
+                  <li>{newDate(repair.dateCreated)}</li>
+                  <li>Requestor</li>
+                  <li className="li-container position-relative">
+                    {repair.customer.firstName} {repair.customer.lastName}
+                    <a
+                      className="email"
+                      href={`mailto:${repair.customer.email}`}
+                    >
+                      {repair.customer.email}
+                    </a>
+                  </li>
+                </ul>
+                <ul className="mb-0">
+                  <li>Updated</li>
+                  <li>
+                    {repair.dateCreated !== repair.lastUpdate
+                      ? newDate(repair.lastUpdate)
+                      : "N/A"}
+                  </li>
+                  <li>Last User</li>
+                  <li className="li-container position-relative">
+                    {repair.user.firstName} {repair.user.lastName}
+                    <a className="email" href={`mailto:${repair.user.email}`}>
+                      {repair.user.email}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <ul className="issue-ul mb-0 flex-grow-1">
+                <li>Issue/Description</li>
+                <li className="issue-repairItem">{repair.issue}</li>
               </ul>
-              <ul className="mb-0">
-                <li>Updated</li>
-                <li>{newDate(repair.lastUpdate)}</li>
-                <li>Last User</li>
-                <li className="li-container position-relative">
-                  {repair.user.firstName} {repair.user.lastName}
-                  <a className="email" href={`mailto:${repair.user.email}`}>
-                    {repair.user.email}
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <ul>
-              <li>Issue/Description</li>
-              <li className="issue-repairItem">{repair.issue}</li>
-            </ul>
-          </Container>
+            </Container>
+          </div>
         </Col>
         <Col md={12} lg={6}>
           <Container className="h-100">
@@ -165,44 +254,7 @@ const RequestItemPage = ({ history }) => {
                       <option value="" default>
                         Update Status:
                       </option>
-                      {user.type !== "USER" ? (
-                        <>
-                          <option value="RECEIVED" default>
-                            RECEIVED
-                          </option>
-                          <option value="ONGOING" default>
-                            ONGOING
-                          </option>
-                          <option value="ON HOLD" default>
-                            ON HOLD
-                          </option>
-                          <option value="OUTGOING" default>
-                            OUTGOING
-                          </option>
-                          <option value="COMPLETED" default>
-                            COMPLETED
-                          </option>
-                        </>
-                      ) : (
-                        ""
-                      )}
-                      {user.type === "ADMIN" ||
-                      user._id === repair.customer._id ? (
-                        <>
-                          <option value="CANCELLED" default>
-                            CANCEL
-                          </option>
-                          <option
-                            className="bg-danger text-white"
-                            value="DELETE"
-                            default
-                          >
-                            DELETE
-                          </option>
-                        </>
-                      ) : (
-                        ""
-                      )}
+                      {options(repair.customer._id, repair.status)}
                     </Form.Control>
                   </Form.Group>
                   <Form.Group className="" controlId="note">
@@ -241,7 +293,7 @@ const RequestItemPage = ({ history }) => {
               </Col>
               <Col className="col-table-repairItem flex-grow-1">
                 {/* <h5>Previous Transactions</h5> */}
-                <div className="table-div-repairItem">
+                <div className="table-div-repairItem border table-responsive-sm">
                   <table className="table repairItem text-center">
                     <thead>
                       <tr>
