@@ -7,34 +7,63 @@
 }
 
 
-th {
+table.myRequests th {
     background: white;
     position: sticky;
     top: 0;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
-th:hover, tr.tr-myRequests td {
+table.myRequests th:hover, tr.tr-myRequests td {
     cursor: pointer;
 }
-.tr-myRequests td:first-child span {
+.tr-myRequests span.device-name {
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
     height: 24px !important;  
 }
-.tr-myRequests td span{
+.tr-myRequests span.scroll-span{
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
     max-height: 130px !important;
 }
+.tr-myRequests .img-span {
+    height: 100px;
+    width: 100%
+}
+.tr-myRequests .img-span img {
+    max-height: 100%;
+    max-width: 100%
+}
 
 
+.request-modal .form-file {
+    background-image: url("../../assets/camera.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 300px;
+    max-width: 350px;
+}
+.request-modal .form-file:hover {
+    opacity: .5;   
+}
+.request-modal #repairImg{
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+}
+.request-modal .form-control-file {
+    cursor: pointer;
+}
+
+/* 
 .tr-myRequests td > img {
     max-height: 100px !important;
     max-width: 100% !important;
 
-}
+} */
 
 @media (min-width: 992px) { 
     table.myRequests { 

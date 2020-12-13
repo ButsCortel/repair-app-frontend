@@ -50,20 +50,20 @@ li.li-container:hover a.email, td:hover a.email {
     table-layout: fixed;
 }
 
-th {
+table.repairItem th {
     background: white;
     position: sticky;
     top: 0;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
     z-index: 1;
 }
-th:hover {
+table.repairItem th:hover {
     cursor: pointer;
 }
 .transactions-row {
     height: 100%;
 }
-td.repairItem span{
+table.repairItem td.repairItem span{
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;

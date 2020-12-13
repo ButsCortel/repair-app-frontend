@@ -18,6 +18,7 @@ const RequestModal = (props) => {
       animation={false}
       show={props.show}
       onHide={props.onHide}
+      className="request-modal"
     >
       <Modal.Header closeButton>
         <Modal.Title>New Request</Modal.Title>

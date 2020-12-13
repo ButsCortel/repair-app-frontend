@@ -3,13 +3,12 @@
     min-width: 0;
 }
 .table-div-myRepairs {
-    /* display: flex;
-    flex-direction: row; */
     flex-grow: 1;
     overflow-y: auto;
 }
 
-th {
+.table-div-myRepairs th {
+    width: 100%;
     background: white;
     position: sticky;
     top: 0;

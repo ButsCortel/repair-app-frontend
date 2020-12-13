@@ -3,12 +3,14 @@ import { Row, Col, Spinner } from "react-bootstrap";
 import api from "../../services/api";
 import { SessionContext } from "../../session-context";
 import RequestRow from "./components/RequestRow";
+import Alert from "./components/Alert";
 import "./index.css";
 
 const MyRepairsPage = ({ history }) => {
   const { isLoggedIn } = useContext(SessionContext);
   const [requests, setRequests] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
@@ -17,6 +19,9 @@ const MyRepairsPage = ({ history }) => {
     getRepairs();
   }, []);
 
+  const handleClose = () => {
+    setShow(false);
+  };
   const handleClick = (id) => {
     history.push("/repairs/" + id);
   };
@@ -52,6 +57,7 @@ const MyRepairsPage = ({ history }) => {
   };
   return (
     <Row className="flex-column h-100">
+      <Alert handleClose={handleClose} show={show} />
       <Col className="col-table-myRepairs flex-grow-1">
         <div className="table-div-myRepairs table-responsive-lg h-100">
           <table className="table myRepairs table-hover text-center">
@@ -70,6 +76,7 @@ const MyRepairsPage = ({ history }) => {
                     handleClick={handleClick}
                     key={request._id}
                     data={request}
+                    setShow={setShow}
                   />
                 ))
               ) : loading ? (

@@ -12,12 +12,14 @@ const RequestRow = ({ data, handleClick }) => {
   return (
     <tr className="tr-myRequests" onClick={() => handleClick(data._id)}>
       <td>
-        <img alt="device image" key={data._id} src={data.image_url} />
+        <span className="img-span d-flex justify-content-center align-items-center">
+          <img alt="device image" key={data._id} src={data.image_url} />
+        </span>
 
-        <span>{data.device}</span>
+        <span className="scroll-span">{data.device}</span>
       </td>
       <td>
-        <span>{data.issue}</span>
+        <span className="scroll-span">{data.issue}</span>
       </td>
       <td className={data.expedite ? "text-danger font-weight-bold" : ""}>
         {data.expedite ? "EXPEDITE" : "Regular"}

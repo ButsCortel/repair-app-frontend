@@ -3,7 +3,6 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import { Col, Container, Row } from "react-bootstrap";
 //Pages
 import RepairsPage from "./pages/repair";
-import RequestPage from "./pages/request";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import RepairItemPage from "./pages/repairItem";
