@@ -70,9 +70,6 @@ table.repairItem td.repairItem span{
     height: 75px !important
     
 }
-option.hidden {
-    display: none
-}
 
 @media (min-width: 992px) {  
     .table-div-repairItem, .repair-item-info {
