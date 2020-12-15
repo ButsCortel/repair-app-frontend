@@ -24,4 +24,4 @@ const HistoryRow = (props) => {
   );
 };
 
-export default HistoryRow;
+export default React.memo(HistoryRow);

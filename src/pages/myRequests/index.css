@@ -13,7 +13,7 @@ table.myRequests th {
     top: 0;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
-table.myRequests th:hover, tr.tr-myRequests td {
+table.myRequests th, tr.tr-myRequests td {
     cursor: pointer;
 }
 .tr-myRequests span.device-name {

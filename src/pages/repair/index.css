@@ -21,8 +21,8 @@
 
 .card:hover {
     z-index: 1;
-    transform: scale(1.1);
     cursor: pointer;
+    opacity: 0.6;
 }
 .device-name {
     height: 50px;

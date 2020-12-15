@@ -21,4 +21,4 @@ const DeleteModal = ({ show, handleClose, handleDelete, loading }) => {
   );
 };
 
-export default DeleteModal;
+export default React.memo(DeleteModal);

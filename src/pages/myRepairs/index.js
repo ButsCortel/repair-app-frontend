@@ -25,31 +25,34 @@ const MyRepairsPage = ({ history }) => {
   const handleClick = (id) => {
     history.push("/repairs/" + id);
   };
-  const handleSort = (event) => {
-    const property = event.target.textContent.toLowerCase();
-    const compare = (a, b) => {
-      if (property === "type") {
-        return b.expedite - a.expedite;
-      }
-      if (property === "update") {
-        return new Date(b.lastUpdate) - new Date(a.lastUpdate);
-      }
-      if (a[property].toLowerCase() < b[property].toLowerCase()) return -1;
-      if (a[property].toLowerCase() > b[property].toLowerCase()) return 1;
-      return 0;
-    };
-    const sorted = requests.sort(compare);
-    setRequests([...sorted]);
-  };
+  // const handleSort = (event) => {
+  //   const property = event.target.textContent.toLowerCase();
+  //   const compare = (a, b) => {
+  //     if (property === "type") {
+  //       return b.expedite - a.expedite;
+  //     }
+  //     if (property === "update") {
+  //       return new Date(b.lastUpdate) - new Date(a.lastUpdate);
+  //     }
+  //     if (a[property].toLowerCase() < b[property].toLowerCase()) return -1;
+  //     if (a[property].toLowerCase() > b[property].toLowerCase()) return 1;
+  //     return 0;
+  //   };
+  //   const sorted = requests.sort(compare);
+  //   setRequests([...sorted]);
+  // };
   const getRepairs = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/tech/requests/", {
-        headers: { "auth-token": token },
-      });
-
-      setRequests(response.data.repairs);
-      setLoading(false);
+      api
+        .get("/tech/requests/", {
+          headers: { "auth-token": token },
+        })
+        .then((response) => {
+          response.data.repairs.reverse();
+          setRequests(response.data.repairs);
+          setLoading(false);
+        });
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -58,11 +61,14 @@ const MyRepairsPage = ({ history }) => {
   return (
     <Row className="flex-column h-100">
       <Alert handleClose={handleClose} show={show} />
+      <Col>
+        <h1>{user.occupied ? "occupied" : "no"}</h1>
+      </Col>
       <Col className="col-table-myRepairs flex-grow-1">
         <div className="table-div-myRepairs table-responsive-lg h-100">
           <table className="table myRepairs table-hover text-center">
             <thead>
-              <tr onClick={handleSort}>
+              <tr>
                 <th>Request</th>
                 <th>Date</th>
                 <th>Status</th>

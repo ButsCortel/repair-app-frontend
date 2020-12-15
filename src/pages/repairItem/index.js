@@ -51,7 +51,6 @@ const RequestItemPage = ({ history }) => {
           setState({
             status: "",
             note: "",
-
             loading: false,
             hasError: false,
             errorMessage: "",
@@ -59,6 +58,7 @@ const RequestItemPage = ({ history }) => {
         });
     } catch (error) {
       console.log(error);
+      history.push("/");
     }
   };
 
@@ -83,16 +83,27 @@ const RequestItemPage = ({ history }) => {
         errorMessage: "",
       });
 
-      api
+      const response = await api
         .put(
           "/requests/" + repair._id,
-          { status, note },
+          { status, note, user },
           { headers: { "auth-token": token } }
         )
-        .then((data) => {
+        .then((response) => {
+          localStorage.setItem("user", JSON.stringify(response.data.user));
           getRepair();
+        })
+        .catch((error) => {
+          console.log(error);
+          setState({
+            ...state,
+            hasError: true,
+            errorMessage: "Already occupied!",
+            loading: false,
+          });
         });
     } catch (error) {
+      console.log(error);
       setState({
         ...state,
         hasError: true,
@@ -279,12 +290,11 @@ const RequestItemPage = ({ history }) => {
               <Col className="flex-grow-0">
                 <div className="mb-2 d-flex justify-content-around align-items-baseline">
                   <Button
-                    className={`mb-sm-0 ${
+                    className={`rounded-pill mb-sm-0 ${
                       user.type === "USER" ? "d-none" : ""
                     }`}
                     title="Update request"
                     variant="outline-primary"
-                    size="lg"
                     onClick={() => setShowUpdate(true)}
                   >
                     Update
@@ -294,8 +304,10 @@ const RequestItemPage = ({ history }) => {
                     />
                   </Button>
                   <Button
-                    className={`mb-sm-0 ${
-                      user.type === "ADMIN"
+                    className={`rounded-pill mb-sm-0 ${
+                      repair.status === "CANCELLED"
+                        ? "d-none"
+                        : user.type === "ADMIN"
                         ? ""
                         : user._id !== repair.customer._id
                         ? "d-none"
@@ -303,7 +315,6 @@ const RequestItemPage = ({ history }) => {
                     }`}
                     title="Cancel request"
                     variant="outline-warning"
-                    size="lg"
                     onClick={handleCancelShow}
                   >
                     Cancel
@@ -313,7 +324,7 @@ const RequestItemPage = ({ history }) => {
                     />
                   </Button>
                   <Button
-                    className={` ${
+                    className={`rounded-pill  ${
                       user.type === "ADMIN"
                         ? ""
                         : user._id !== repair.customer._id
@@ -331,7 +342,6 @@ const RequestItemPage = ({ history }) => {
                     }
                     title="Delete request"
                     variant="outline-danger"
-                    size="lg"
                     onClick={() => setShowDelete(true)}
                   >
                     Delete

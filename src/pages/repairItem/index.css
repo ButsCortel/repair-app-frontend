@@ -57,9 +57,7 @@ table.repairItem th {
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
     z-index: 1;
 }
-table.repairItem th:hover {
-    cursor: pointer;
-}
+
 .transactions-row {
     height: 100%;
 }

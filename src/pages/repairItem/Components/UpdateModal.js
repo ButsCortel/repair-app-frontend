@@ -47,10 +47,10 @@ const UpdateModal = ({
               disabled={!state.status || state.loading}
               required
             />
+            <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
+              {state.hasError ? state.errorMessage : ""}
+            </Form.Text>
           </Form.Group>
-          <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
-            {state.hasError ? state.errorMessage : ""}
-          </Form.Text>
         </Form>
       </Modal.Body>
       <Modal.Footer>

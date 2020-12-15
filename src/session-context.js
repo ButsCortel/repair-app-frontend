@@ -4,8 +4,9 @@ export const SessionContext = createContext();
 
 export const ContextWrapper = (props) => {
   const defaultValueHandler = () => {
-    const user = localStorage.getItem("token");
-    if (user) return true;
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (user && token) return true;
     return false;
   };
 
