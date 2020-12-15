@@ -12,7 +12,7 @@ const UpdateModal = ({
   state,
 }) => {
   return (
-    <Modal show={show} onHide={handleClose} backdop="static">
+    <Modal centered show={show} onHide={handleClose} backdop="static">
       <Modal.Header closeButton>
         <Modal.Title>Update Status</Modal.Title>
       </Modal.Header>
@@ -44,7 +44,7 @@ const UpdateModal = ({
               value={state.note}
               rows={3}
               onChange={handleChange}
-              disabled={!state.status || state.success}
+              disabled={!state.status || state.loading}
               required
             />
           </Form.Group>
@@ -55,11 +55,11 @@ const UpdateModal = ({
       </Modal.Body>
       <Modal.Footer>
         <div className="d-flex justify-content-end mt-1">
-          {state.success ? <Spinner animation="border" /> : ""}
+          {state.loading ? <Spinner animation="border" /> : ""}
           <Button
             variant="primary"
             onClick={handleSubmit}
-            disabled={!state.status || !state.note || state.success}
+            disabled={!state.status || !state.note || state.loading}
           >
             Submit
           </Button>

@@ -10,6 +10,7 @@ import moment from "moment";
 //Components
 import HistoryRow from "./Components/HistoryRow";
 import UpdateModal from "./Components/UpdateModal";
+import CancelModal from "./Components/CancelModal";
 
 import "./index.css";
 import DeleteModal from "./Components/DeleteModal";
@@ -22,32 +23,62 @@ const RequestItemPage = ({ history }) => {
   const { id } = useParams();
   const [showUpdate, setShowUpdate] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [showCancel, setShowCancel] = useState(false);
   const [state, setState] = useState({
     status: "",
     note: "",
-    repairId: "",
-    success: false,
+    loading: false,
     hasError: false,
     errorMessage: "",
   });
+  useEffect(() => {
+    if (!isLoggedIn) return history.push("/login");
+    getRepair();
+  }, []);
+  const getRepair = async () => {
+    try {
+      api
+        .get("/requests/" + id, {
+          headers: { "auth-token": token },
+        })
+        .then((response) => {
+          setRepair(response.data.repair);
+          const { history } = response.data;
+          if (history) history.reverse();
+          setTransactions(history);
+          setShowCancel(false);
+          setShowUpdate(false);
+          setState({
+            status: "",
+            note: "",
+
+            loading: false,
+            hasError: false,
+            errorMessage: "",
+          });
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleChange = (event) => {
     const { value, name } = event.target;
     setState({ ...state, [name]: value });
   };
-  const handleDelete = () => {
-    api
-      .delete("/requests/delete/" + repair._id, {
-        headers: { "auth-token": token },
-      })
-      .then((res) => history.push("/"));
-  };
   const handleSubmit = async (event) => {
     const { status, note } = state;
-    if (!status || !note) return alert("Missing information!");
+    if (!status || !note)
+      return setState({
+        ...state,
+        hasError: true,
+        errorMessage: "Missing Information!",
+        loading: false,
+      });
     try {
       setState({
         ...state,
-        success: true,
+        loading: true,
         hasError: false,
         errorMessage: "",
       });
@@ -60,54 +91,65 @@ const RequestItemPage = ({ history }) => {
         )
         .then((data) => {
           getRepair();
-          setState({
-            status: "",
-            note: "",
-            repairId: "",
-            success: false,
-            hasError: false,
-            errorMessage: "",
-          });
         });
     } catch (error) {
       setState({
         ...state,
         hasError: true,
         errorMessage: "Missing Information!",
-        success: false,
+        loading: false,
       });
     }
   };
-  const getRepair = async () => {
+  const handleDelete = () => {
     try {
-      const response = await api.get("/requests/" + id, {
-        headers: { "auth-token": token },
-      });
-      setRepair(response.data.repair);
-      const { history } = response.data;
-      if (history) return setTransactions(history.reverse());
-      setTransactions(response.data.history);
+      setState({ ...state, loading: true });
+      api
+        .delete("/requests/delete/" + repair._id, {
+          headers: { "auth-token": token },
+        })
+        .then((res) => {
+          history.push("/");
+        });
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
+      setState({
+        ...state,
+        loading: false,
+        hasError: true,
+        errorMessage: "Error deleting request!",
+      });
     }
   };
-  useEffect(() => {
-    if (!isLoggedIn) return history.push("/login");
-    getRepair();
-  }, []);
   const handleUpdateClose = () => {
     setShowUpdate(false);
     setState({
       status: "",
       note: "",
-      repairId: "",
-      success: false,
+      loading: false,
       hasError: false,
       errorMessage: "",
     });
   };
   const handleDeleteClose = () => {
     setShowDelete(false);
+  };
+  const handleCancelClose = () => {
+    setShowCancel(false);
+    setState({
+      status: "",
+      note: "",
+      loading: false,
+      hasError: false,
+      errorMessage: "",
+    });
+  };
+  const handleCancelShow = () => {
+    setState({
+      ...state,
+      status: "CANCELLED",
+    });
+    setShowCancel(true);
   };
 
   const newDate = (date) => {
@@ -235,56 +277,70 @@ const RequestItemPage = ({ history }) => {
           <Container className="h-100">
             <Row className="transactions-row flex-column pt-0 mh-100">
               <Col className="flex-grow-0">
-                <Container className="mb-2">
-                  <Row className="justify-content-around">
-                    <Button
-                      className={`col-sm-3 mb-2 mb-sm-0 ${
-                        user.type === "USER" ? "d-none" : ""
-                      }`}
-                      variant="primary"
-                      onClick={() => setShowUpdate(true)}
-                    >
-                      Update
-                      <MdUpdate style={{ verticalAlign: "baseline" }} />
-                    </Button>
-                    <Button
-                      className={`col-sm-3 mb-2 mb-sm-0 ${
-                        user.type === "ADMIN"
-                          ? ""
-                          : user._id !== repair.customer._id
-                          ? "d-none"
-                          : ""
-                      }`}
-                      variant="secondary"
-                    >
-                      Cancel
-                      <MdCancel style={{ verticalAlign: "baseline" }} />
-                    </Button>
-                    <Button
-                      className={`col-sm-3 ${
-                        user.type === "ADMIN"
-                          ? ""
-                          : user._id !== repair.customer._id
-                          ? "d-none"
-                          : ""
-                      }`}
-                      disabled={
-                        user.type === "ADMIN"
-                          ? false
-                          : user._id === repair.customer._id
-                          ? false
-                          : repair.status === "INCOMING"
-                          ? false
-                          : true
-                      }
-                      variant="danger"
-                      onClick={() => setShowDelete(true)}
-                    >
-                      Delete
-                      <MdDeleteForever style={{ verticalAlign: "baseline" }} />
-                    </Button>
-                  </Row>
-                </Container>
+                <div className="mb-2 d-flex justify-content-around align-items-baseline">
+                  <Button
+                    className={`mb-sm-0 ${
+                      user.type === "USER" ? "d-none" : ""
+                    }`}
+                    title="Update request"
+                    variant="outline-primary"
+                    size="lg"
+                    onClick={() => setShowUpdate(true)}
+                  >
+                    Update
+                    <MdUpdate
+                      title="Update request"
+                      style={{ verticalAlign: "text-top" }}
+                    />
+                  </Button>
+                  <Button
+                    className={`mb-sm-0 ${
+                      user.type === "ADMIN"
+                        ? ""
+                        : user._id !== repair.customer._id
+                        ? "d-none"
+                        : ""
+                    }`}
+                    title="Cancel request"
+                    variant="outline-warning"
+                    size="lg"
+                    onClick={handleCancelShow}
+                  >
+                    Cancel
+                    <MdCancel
+                      title="Cancel request"
+                      style={{ verticalAlign: "text-top" }}
+                    />
+                  </Button>
+                  <Button
+                    className={` ${
+                      user.type === "ADMIN"
+                        ? ""
+                        : user._id !== repair.customer._id
+                        ? "d-none"
+                        : ""
+                    }`}
+                    disabled={
+                      user.type === "ADMIN"
+                        ? false
+                        : user._id === repair.customer._id
+                        ? false
+                        : repair.status === "INCOMING"
+                        ? false
+                        : true
+                    }
+                    title="Delete request"
+                    variant="outline-danger"
+                    size="lg"
+                    onClick={() => setShowDelete(true)}
+                  >
+                    Delete
+                    <MdDeleteForever
+                      title="Delete request"
+                      style={{ verticalAlign: "text-top" }}
+                    />
+                  </Button>
+                </div>
 
                 <UpdateModal
                   state={state}
@@ -297,9 +353,17 @@ const RequestItemPage = ({ history }) => {
                   handleSubmit={handleSubmit}
                 />
                 <DeleteModal
+                  loading={state.loading}
                   show={showDelete}
                   handleClose={handleDeleteClose}
                   handleDelete={handleDelete}
+                />
+                <CancelModal
+                  state={state}
+                  show={showCancel}
+                  handleClose={handleCancelClose}
+                  handleChange={handleChange}
+                  handleCancel={handleSubmit}
                 />
               </Col>
               <Col className="col-table-repairItem flex-grow-1">
