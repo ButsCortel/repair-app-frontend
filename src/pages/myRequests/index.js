@@ -97,7 +97,7 @@ const MyRequestsPage = ({ history }) => {
                 loading: false,
                 uploading: false,
                 hasError: true,
-                errorMessage: "Upload error!",
+                errorMessage: error.response.data,
               });
             }
           );
@@ -106,7 +106,7 @@ const MyRequestsPage = ({ history }) => {
           loading: false,
           uploading: false,
           hasError: true,
-          errorMessage: "Missing required information!",
+          errorMessage: "Missing required Information!",
         });
       }
     } catch (error) {
@@ -114,9 +114,8 @@ const MyRequestsPage = ({ history }) => {
         loading: false,
         uploading: false,
         hasError: true,
-        errorMessage: "Server error!",
+        errorMessage: error.response.data,
       });
-      console.log(error);
     }
   };
   const handleHide = () => {
@@ -135,7 +134,7 @@ const MyRequestsPage = ({ history }) => {
       const response = await api.get("/user/requests/", {
         headers: { "auth-token": token },
       });
-      setRequests([...response.data.repairs]);
+      setRequests([...response.data]);
       setState({ ...state, loading: false });
     } catch (error) {
       setState({ ...state, loading: false });

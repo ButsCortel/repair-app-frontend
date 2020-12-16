@@ -11,9 +11,10 @@ import moment from "moment";
 import HistoryRow from "./Components/HistoryRow";
 import UpdateModal from "./Components/UpdateModal";
 import CancelModal from "./Components/CancelModal";
+import DeleteModal from "./Components/DeleteModal";
 
 import "./index.css";
-import DeleteModal from "./Components/DeleteModal";
+
 const RequestItemPage = ({ history }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -66,7 +67,7 @@ const RequestItemPage = ({ history }) => {
     const { value, name } = event.target;
     setState({ ...state, [name]: value });
   };
-  const handleSubmit = async (event) => {
+  const handleSubmit = async () => {
     const { status, note } = state;
     if (!status || !note)
       return setState({
@@ -83,10 +84,10 @@ const RequestItemPage = ({ history }) => {
         errorMessage: "",
       });
 
-      const response = await api
+      api
         .put(
           "/requests/" + repair._id,
-          { status, note, user },
+          { status, note, user, prevStatus: repair.status },
           { headers: { "auth-token": token } }
         )
         .then((response) => {
@@ -94,20 +95,18 @@ const RequestItemPage = ({ history }) => {
           getRepair();
         })
         .catch((error) => {
-          console.log(error);
           setState({
             ...state,
             hasError: true,
-            errorMessage: "Already occupied!",
+            errorMessage: error.response.data,
             loading: false,
           });
         });
     } catch (error) {
-      console.log(error);
       setState({
         ...state,
         hasError: true,
-        errorMessage: "Missing Information!",
+        errorMessage: error.response.data,
         loading: false,
       });
     }
@@ -123,12 +122,11 @@ const RequestItemPage = ({ history }) => {
           history.push("/");
         });
     } catch (error) {
-      console.log(error.response);
       setState({
         ...state,
         loading: false,
         hasError: true,
-        errorMessage: "Error deleting request!",
+        errorMessage: error.response.data,
       });
     }
   };
@@ -176,7 +174,6 @@ const RequestItemPage = ({ history }) => {
           <option value="ON HOLD">ON HOLD</option>
           <option value="OUTGOING">OUTGOING</option>
           <option value="COMPLETED">COMPLETED</option>
-          <option value="CANCELLED">CANCEL</option>
         </>
       );
     if (user.type === "TECH") {
@@ -291,7 +288,9 @@ const RequestItemPage = ({ history }) => {
                 <div className="mb-2 d-flex justify-content-around align-items-baseline">
                   <Button
                     className={`rounded-pill mb-sm-0 ${
-                      user.type === "USER" ? "d-none" : ""
+                      user.type === "USER" || repair.status === "COMPLETED"
+                        ? "d-none"
+                        : ""
                     }`}
                     title="Update request"
                     variant="outline-primary"
@@ -305,7 +304,9 @@ const RequestItemPage = ({ history }) => {
                   </Button>
                   <Button
                     className={`rounded-pill mb-sm-0 ${
-                      repair.status === "CANCELLED"
+                      repair.status === "CANCELLED" ||
+                      repair.status === "OUTGOING" ||
+                      repair.status === "COMPLETED"
                         ? "d-none"
                         : user.type === "ADMIN"
                         ? ""

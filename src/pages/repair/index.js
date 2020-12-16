@@ -34,7 +34,7 @@ const RepairPage = ({ history }) => {
         headers: { "auth-token": token },
       })
       .then((response) => {
-        setRepairs(response.data.repairs);
+        setRepairs(response.data);
         setLoading(false);
       })
       .catch((error) => {
