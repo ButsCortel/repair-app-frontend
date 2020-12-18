@@ -12,7 +12,7 @@ const UpdateModal = ({
   state,
 }) => {
   return (
-    <Modal centered show={show} onHide={handleClose} backdop="static">
+    <Modal centered show={show} onHide={handleClose} backdrop="static">
       <Modal.Header closeButton>
         <Modal.Title>Update Status</Modal.Title>
       </Modal.Header>
@@ -33,7 +33,7 @@ const UpdateModal = ({
               <option disabled value="" default>
                 New Status:
               </option>
-              {options(repair.customer._id, repair.status)}
+              {options(repair.status)}
             </Form.Control>
           </Form.Group>
           <Form.Group className="" controlId="note">

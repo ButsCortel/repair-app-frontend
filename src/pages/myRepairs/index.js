@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Row, Col, Spinner } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Spinner,
+  Container,
+  Badge,
+  Image,
+  Button,
+} from "react-bootstrap";
 import api from "../../services/api";
 import { SessionContext } from "../../session-context";
 import RequestRow from "./components/RequestRow";
@@ -59,10 +67,43 @@ const MyRepairsPage = ({ history }) => {
     }
   };
   return (
-    <Row className="flex-column h-100">
+    <Row className="myRepairs-row flex-column">
       <Alert handleClose={handleClose} show={show} />
-      <Col>
-        <h1>{user.occupied ? "occupied" : "no"}</h1>
+      <Col className="flex-md-grow-0">
+        <Container>
+          <Row className="p-2 ongoing-row rounded bg-light mb-2 justify-content-between">
+            {user.repair && (
+              <>
+                <Col md={3} className="h-100">
+                  <Image
+                    className="img-fluid mh-100"
+                    src={user.repair.image_url}
+                    rounded
+                    thumbnail
+                  />
+                </Col>
+                <Col md={7} className="h-100">
+                  <Badge variant="warning">Ongoing</Badge>
+                  <p>{user.repair.device}</p>
+                </Col>
+                <Col md={2} className="h-100">
+                  <div className="h-100 d-flex flex-column justify-content-around">
+                    <Button variant="danger" size="sm">
+                      Hold
+                    </Button>
+                    <Button variant="success" size="sm">
+                      Complete
+                    </Button>
+                    <Button variant="secondary" size="sm">
+                      View
+                    </Button>
+                  </div>
+                </Col>
+              </>
+            )}
+          </Row>
+          <Row className="p-2 onhold-row rounded bg-light mb-2 justify-content-between"></Row>
+        </Container>
       </Col>
       <Col className="col-table-myRepairs flex-grow-1">
         <div className="table-div-myRepairs table-responsive-lg h-100">

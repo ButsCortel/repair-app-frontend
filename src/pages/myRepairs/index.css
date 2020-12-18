@@ -2,6 +2,7 @@
     min-height: 0;
     min-width: 0;
 }
+
 .table-div-myRepairs {
     flex-grow: 1;
     overflow-y: auto;
@@ -14,6 +15,7 @@
     top: 0;
     box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
 }
+
 tr.tr-myRepairs {
     cursor: pointer;
 }
@@ -22,24 +24,37 @@ tr.tr-myRepairs {
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
-    height: 24px !important;  
+    height: 24px !important;
 }
-.tr-myRepairs td span{
+
+.tr-myRepairs td span {
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
     max-height: 130px !important;
 }
-.tr-myRepairs td > img {
+
+.tr-myRepairs td>img {
     display: block;
     margin: 0 auto;
     height: 100px !important;
     max-width: 200px !important;
-
 }
-@media (min-width: 992px) { 
-    table.myRepairs { 
+
+@media (min-width: 992px) {
+    table.myRepairs {
         table-layout: fixed;
-    
+    }
+}
+
+@media (min-width: 768px) {
+    .ongoing-row {
+        height: 150px;
+    }
+    .onhold-row {
+        height: 120px;
+    }
+    .myRepairs-row {
+        height: 100%;
     }
 }

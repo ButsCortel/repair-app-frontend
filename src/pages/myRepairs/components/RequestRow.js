@@ -12,7 +12,6 @@ const RequestRow = ({ data, handleClick, setShow }) => {
   return (
     <tr
       className="tr-myRepairs"
-      disabled
       onClick={
         data.repair ? () => handleClick(data.repair._id) : () => setShow(true)
       }

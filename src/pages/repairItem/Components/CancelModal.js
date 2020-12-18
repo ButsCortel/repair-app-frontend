@@ -9,7 +9,7 @@ const CancelModal = ({
   state,
 }) => {
   return (
-    <Modal centered show={show} onHide={handleClose} backdop="static">
+    <Modal centered show={show} onHide={handleClose} backdrop="static">
       <Modal.Header closeButton>
         <Modal.Title>Cancel Request</Modal.Title>
       </Modal.Header>

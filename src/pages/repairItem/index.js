@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { SessionContext } from "../../session-context";
 import { Container, Row, Col, Badge, Button } from "react-bootstrap";
@@ -166,53 +166,74 @@ const RequestItemPage = ({ history }) => {
     return original.format("MMM DD YYYY, h:mm:ss a");
   };
   const options = (status) => {
-    if (user.type === "ADMIN")
+    if (user.type !== "USER") {
       return (
         <>
-          <option value="RECEIVED">RECEIVED</option>
-          <option value="ONGOING">ONGOING</option>
-          <option value="ON HOLD">ON HOLD</option>
-          <option value="OUTGOING">OUTGOING</option>
-          <option value="COMPLETED">COMPLETED</option>
+          {status === "INCOMING" ? (
+            <option value="RECEIVED">RECEIVED</option>
+          ) : (
+            ""
+          )}
+          {status === "RECEIVED" || status === "ON HOLD" ? (
+            <option value="ONGOING">ONGOING</option>
+          ) : (
+            ""
+          )}
+          {status === "ONGOING" ? <option value="ON HOLD">ON HOLD</option> : ""}
+          {status === "ON HOLD" ||
+          status === "ONGOING" ||
+          status === "CANCELLED" ? (
+            <option value="OUTGOING">OUTGOING</option>
+          ) : (
+            ""
+          )}
+          {status === "OUTGOING" ? (
+            <option value="COMPLETED">COMPLETED</option>
+          ) : (
+            ""
+          )}
         </>
       );
-    if (user.type === "TECH") {
+    }
+  };
+  const actions = () => {
+    if (user.type === "ADMIN" || user._id === repair.customer._id) {
       return (
         <>
-          <option
-            className={status !== "INCOMING" ? "d-none" : ""}
-            value="RECEIVED"
-          >
-            RECEIVED
-          </option>
-          <option
-            className={
-              status !== "RECEIVED" && status !== "ON HOLD" ? "d-none" : ""
-            }
-            value="ONGOING"
-          >
-            ONGOING
-          </option>
-          <option
-            className={status !== "ONGOING" ? "d-none" : ""}
-            value="ON HOLD"
-          >
-            ON HOLD
-          </option>
-          <option
-            className={
-              status !== "ON HOLD" && status !== "ONGOING" ? "d-none" : ""
-            }
-            value="OUTGOING"
-          >
-            OUTGOING
-          </option>
-          <option
-            className={status !== "OUTGOING" ? "d-none" : ""}
-            value="COMPLETED"
-          >
-            COMPLETED
-          </option>
+          {repair.status !== "OUTGOING" &&
+          repair.status !== "COMPLETED" &&
+          repair.status !== "CANCELLED" ? (
+            <Button
+              className="rounded-pill mb-sm-0"
+              title="Cancel request"
+              variant="outline-warning"
+              onClick={handleCancelShow}
+            >
+              Cancel
+              <MdCancel
+                title="Cancel request"
+                style={{ verticalAlign: "text-top" }}
+              />
+            </Button>
+          ) : (
+            ""
+          )}
+          {repair.status === "INCOMING" || repair.status === "COMPLETED" ? (
+            <Button
+              className="rounded-pill"
+              title="Delete request"
+              variant="outline-danger"
+              onClick={() => setShowDelete(true)}
+            >
+              Delete
+              <MdDeleteForever
+                title="Delete request"
+                style={{ verticalAlign: "text-top" }}
+              />
+            </Button>
+          ) : (
+            ""
+          )}
         </>
       );
     }
@@ -286,71 +307,23 @@ const RequestItemPage = ({ history }) => {
             <Row className="transactions-row flex-column pt-0 mh-100">
               <Col className="flex-grow-0">
                 <div className="mb-2 d-flex justify-content-around align-items-baseline">
-                  <Button
-                    className={`rounded-pill mb-sm-0 ${
-                      user.type === "USER" || repair.status === "COMPLETED"
-                        ? "d-none"
-                        : ""
-                    }`}
-                    title="Update request"
-                    variant="outline-primary"
-                    onClick={() => setShowUpdate(true)}
-                  >
-                    Update
-                    <MdUpdate
+                  {repair.status !== "COMPLETED" && user.type !== "USER" ? (
+                    <Button
+                      className="rounded-pill mb-sm-0"
                       title="Update request"
-                      style={{ verticalAlign: "text-top" }}
-                    />
-                  </Button>
-                  <Button
-                    className={`rounded-pill mb-sm-0 ${
-                      repair.status === "CANCELLED" ||
-                      repair.status === "OUTGOING" ||
-                      repair.status === "COMPLETED"
-                        ? "d-none"
-                        : user.type === "ADMIN"
-                        ? ""
-                        : user._id !== repair.customer._id
-                        ? "d-none"
-                        : ""
-                    }`}
-                    title="Cancel request"
-                    variant="outline-warning"
-                    onClick={handleCancelShow}
-                  >
-                    Cancel
-                    <MdCancel
-                      title="Cancel request"
-                      style={{ verticalAlign: "text-top" }}
-                    />
-                  </Button>
-                  <Button
-                    className={`rounded-pill  ${
-                      user.type === "ADMIN"
-                        ? ""
-                        : user._id !== repair.customer._id
-                        ? "d-none"
-                        : ""
-                    }`}
-                    disabled={
-                      user.type === "ADMIN"
-                        ? false
-                        : user._id === repair.customer._id
-                        ? false
-                        : repair.status === "INCOMING"
-                        ? false
-                        : true
-                    }
-                    title="Delete request"
-                    variant="outline-danger"
-                    onClick={() => setShowDelete(true)}
-                  >
-                    Delete
-                    <MdDeleteForever
-                      title="Delete request"
-                      style={{ verticalAlign: "text-top" }}
-                    />
-                  </Button>
+                      variant="outline-primary"
+                      onClick={() => setShowUpdate(true)}
+                    >
+                      Update
+                      <MdUpdate
+                        title="Update request"
+                        style={{ verticalAlign: "text-top" }}
+                      />
+                    </Button>
+                  ) : (
+                    ""
+                  )}
+                  {actions()}
                 </div>
 
                 <UpdateModal
