@@ -101,8 +101,8 @@ const RepairPage = ({ history }) => {
       ) : loading ? (
         <Row>
           <Col>
-            <div className="text-center">
-              <Spinner animation="border" />
+            <div className="text-center text-muted">
+              <p>Loading Queue...</p>
             </div>
           </Col>
         </Row>

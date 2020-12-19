@@ -4,6 +4,7 @@
 }
 
 .table-div-myRepairs {
+    min-height: 190px;
     flex-grow: 1;
     overflow-y: auto;
 }
@@ -41,6 +42,10 @@ tr.tr-myRepairs {
     max-width: 200px !important;
 }
 
+.onhold-row {
+    height: 120px;
+}
+
 @media (min-width: 992px) {
     table.myRepairs {
         table-layout: fixed;
@@ -50,9 +55,6 @@ tr.tr-myRepairs {
 @media (min-width: 768px) {
     .ongoing-row {
         height: 150px;
-    }
-    .onhold-row {
-        height: 120px;
     }
     .myRepairs-row {
         height: 100%;

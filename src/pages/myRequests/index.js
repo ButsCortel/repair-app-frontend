@@ -185,12 +185,14 @@ const MyRequestsPage = ({ history }) => {
               ) : state.loading ? (
                 <tr>
                   <td colSpan="5">
-                    <Spinner animation="border" />
+                    <span className="text-muted">Loading your requests...</span>
                   </td>
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan="5">You have no requests.</td>
+                  <td colSpan="5">
+                    <span>You have no request.</span>
+                  </td>
                 </tr>
               )}
             </tbody>
