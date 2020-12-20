@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { SessionContext } from "../../session-context";
 import { Container, Row, Col, Badge, Button } from "react-bootstrap";
 import { MdDeleteForever, MdUpdate, MdCancel } from "react-icons/md";
+import { FaRegQuestionCircle } from "react-icons/fa";
 
 //Dependencies
 import api from "../../services/api";
@@ -37,6 +38,9 @@ const RequestItemPage = ({ history }) => {
     if (!isLoggedIn) return history.push("/login");
     setState({ ...state, repairLoading: true });
     getRepair();
+
+    const interval = setInterval(() => getRepair(), 30000);
+    return () => clearInterval(interval);
   }, []);
   const getRepair = async () => {
     api
@@ -69,8 +73,7 @@ const RequestItemPage = ({ history }) => {
     const { value, name } = event.target;
     setState({ ...state, [name]: value });
   };
-  const handleSubmit = async () => {
-    const { status, note } = state;
+  const handleSubmit = async (status, note) => {
     if (!status || !note)
       return setState({
         ...state,
@@ -164,7 +167,39 @@ const RequestItemPage = ({ history }) => {
 
   const newDate = (date) => {
     const original = moment(date);
-    return original.format("MMM DD YYYY, h:mm:ss a");
+    return original.format("MM/D/YYYY, h:mm:ss a");
+  };
+  const timeElapsed = (lastUpdate) => {
+    const timeDiff = Date.now() - Date.parse(lastUpdate);
+    const duration = moment.duration(timeDiff);
+    return `${
+      Math.floor(duration.asDays())
+        ? Math.floor(duration.asDays()).toString() + " d "
+        : ""
+    } ${Math.floor(duration.asHours())} hr ${moment
+      .utc(timeDiff)
+      .format("mm")} min`;
+  };
+  const timeOngoing = (ongoing, lastUpdate) => {
+    const timeDiff = ongoing + (Date.now() - Date.parse(lastUpdate));
+    const duration = moment.duration(timeDiff);
+    return `${
+      Math.floor(duration.asDays())
+        ? Math.floor(duration.asDays()).toString() + " d "
+        : ""
+    } ${Math.floor(duration.asHours())} hr ${moment
+      .utc(timeDiff)
+      .format("mm")} min`;
+  };
+  const parseMilli = (ongoing) => {
+    const duration = moment.duration(ongoing);
+    return `${
+      Math.floor(duration.asDays())
+        ? Math.floor(duration.asDays()).toString() + " d "
+        : ""
+    } ${Math.floor(duration.asHours())} hr ${moment
+      .utc(ongoing)
+      .format("mm")} min`;
   };
   const options = (status) => {
     if (user.type !== "USER") {
@@ -239,6 +274,7 @@ const RequestItemPage = ({ history }) => {
       );
     }
   };
+
   return (
     <>
       <Row className="repair-item-row text-center justify-content-between align-items-stretch  h-100">
@@ -268,7 +304,7 @@ const RequestItemPage = ({ history }) => {
                     </Badge>
                   </div>
                   <div className="d-flex flex-column flex-sm-row justify-content-between mh-100">
-                    <ul className="mb-0">
+                    <ul className="mb-0 border p-1">
                       <li>Created</li>
                       <li>{newDate(repair.dateCreated)}</li>
                       <li>Requestor</li>
@@ -282,7 +318,7 @@ const RequestItemPage = ({ history }) => {
                         </a>
                       </li>
                     </ul>
-                    <ul className="mb-0">
+                    <ul className="mb-0 border p-1">
                       <li>Updated</li>
                       <li>
                         {repair.dateCreated !== repair.lastUpdate
@@ -298,6 +334,34 @@ const RequestItemPage = ({ history }) => {
                         >
                           {repair.user.email}
                         </a>
+                      </li>
+                    </ul>
+                    <ul className="mb-0 border p-1">
+                      <li title="Time spent working (ONGOING)">
+                        Time spent:
+                        <FaRegQuestionCircle
+                          style={{ verticalAlign: "baseline" }}
+                        />
+                      </li>
+                      <li>
+                        {repair.totalOngoing && repair.status === "ONGOING"
+                          ? timeOngoing(repair.totalOngoing, repair.lastUpdate)
+                          : !repair.totalOngoing && repair.status === "ONGOING"
+                          ? parseMilli(repair.lastUpdate)
+                          : repair.totalOngoing && repair.status !== "ONGOING"
+                          ? parseMilli(repair.totalOngoing)
+                          : "N/A"}
+                      </li>
+                      <li title="Time elapsed from start (INCOMING)">
+                        Total time:{" "}
+                        <FaRegQuestionCircle
+                          style={{ verticalAlign: "baseline" }}
+                        />
+                      </li>
+                      <li>
+                        {!repair.totalTime
+                          ? timeElapsed(repair.dateCreated)
+                          : parseMilli(repair.totalTime)}
                       </li>
                     </ul>
                   </div>

@@ -1,19 +1,28 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 
-const CancelModal = ({ show, handleClose, handleCancel, state }) => {
+const UpdateModal = ({ show, handleClose, handleSubmit, state }) => {
   const [note, setNote] = useState("");
   return (
-    <Modal centered show={show} onHide={handleClose} backdrop="static">
+    <Modal
+      centered
+      show={show}
+      onHide={() => {
+        handleClose();
+        setNote("");
+      }}
+      backdrop="static"
+    >
       <Modal.Header closeButton>
-        <Modal.Title>Cancel Request</Modal.Title>
+        <Modal.Title>Update Request</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group controlId="cancelNote">
-            <Form.Label>Reason for Cancelling:</Form.Label>
+          <Form.Group controlId="note">
+            <Form.Label>Update request to {state.status}</Form.Label>
             <Form.Control
               onChange={(e) => setNote(e.target.value)}
+              placeholder="Note for future reference:"
               name="note"
               value={note}
               as="textarea"
@@ -31,10 +40,7 @@ const CancelModal = ({ show, handleClose, handleCancel, state }) => {
           disabled={!note}
           variant="primary"
           title={!note ? "Please enter reason first." : ""}
-          onClick={() => {
-            handleCancel(state.status, note);
-            setNote("");
-          }}
+          onClick={() => handleSubmit(state.status, note)}
         >
           Confirm
         </Button>
@@ -52,4 +58,4 @@ const CancelModal = ({ show, handleClose, handleCancel, state }) => {
   );
 };
 
-export default React.memo(CancelModal);
+export default React.memo(UpdateModal);

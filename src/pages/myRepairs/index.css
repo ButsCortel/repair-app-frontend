@@ -42,6 +42,26 @@ tr.tr-myRepairs {
     max-width: 200px !important;
 }
 
+.repair-issue-body {
+    min-height: 0;
+    flex-basis: 0;
+}
+
+.ongoing-row .repair-issue {
+    overflow-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.ongoing-row ul {
+    list-style: none;
+}
+
+.ongoing-row ul li:nth-child(odd) {
+    font-size: smaller;
+}
+
 .onhold-row {
     height: 120px;
 }

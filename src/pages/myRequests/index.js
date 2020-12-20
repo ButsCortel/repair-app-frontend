@@ -134,7 +134,7 @@ const MyRequestsPage = ({ history }) => {
       const response = await api.get("/user/requests/", {
         headers: { "auth-token": token },
       });
-      setRequests([...response.data]);
+      setRequests(response.data.reverse());
       setState({ ...state, loading: false });
     } catch (error) {
       setState({ ...state, loading: false });

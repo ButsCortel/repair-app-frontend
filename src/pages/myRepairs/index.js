@@ -8,12 +8,14 @@ import {
   Image,
   Button,
 } from "react-bootstrap";
-import { FaCheck, FaPause, FaEye } from "react-icons/fa";
+import { FaCheck, FaPause, FaEye, FaRegQuestionCircle } from "react-icons/fa";
 import api from "../../services/api";
 import { SessionContext } from "../../session-context";
 import RequestRow from "./components/RequestRow";
 import Alert from "./components/Alert";
+import UpdateModal from "./components/UpdateModal";
 import OnHoldCard from "./components/OnHoldCard";
+import moment from "moment";
 import "./index.css";
 
 const MyRepairsPage = ({ history }) => {
@@ -23,20 +25,89 @@ const MyRepairsPage = ({ history }) => {
   const [repairLoading, setRepairLoading] = useState(false);
   const [repair, setRepair] = useState(null);
   const [show, setShow] = useState(false);
+  const [update, setUpdate] = useState({
+    showUpdate: false,
+    hasError: false,
+    loading: false,
+    errorMessage: "",
+  });
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     if (!isLoggedIn || user.type === "USER") return history.push("/login");
     if (user.type === "USER") return history.push("/");
-    getRepairs();
+    setRepairLoading(true);
+    getRepair();
+    getTransactions();
+    const interval = setInterval(() => {
+      getRepair();
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleClose = () => {
-    setShow(false);
+    if (show) return setShow(false);
+    if (update.showUpdate)
+      return setUpdate({
+        showUpdate: false,
+        hasError: false,
+        loading: false,
+        errorMessage: "",
+        note: "",
+        status: "",
+      });
   };
   const handleClick = (id) => {
     history.push("/repairs/" + id);
   };
+  const handleSubmit = (status, note) => {
+    setUpdate({
+      ...update,
+      loading: true,
+      hasError: false,
+      errorMessage: "",
+    });
+    if (!status || !note)
+      return setUpdate({
+        ...update,
+        hasError: true,
+        errorMessage: "Missing required info!",
+        loading: false,
+      });
+    api
+      .put(
+        "/requests/" + repair._id,
+        { status, prevStatus: repair.status, note },
+        { headers: { "auth-token": token } }
+      )
+      .then((res) => {
+        getRepair();
+        getTransactions();
+      })
+      .catch((err) => {
+        setUpdate({
+          ...update,
+          loading: false,
+          hasError: true,
+          errorMessage: err.response.message,
+        });
+      });
+  };
+  const getRepair = () => {
+    api
+      .get("/tech/ongoing", {
+        headers: { "auth-token": token },
+      })
+      .then((response) => {
+        setRepair(response.data);
+        setRepairLoading(false);
+      })
+      .catch((error) => {
+        setRepairLoading(false);
+        console.log(error);
+      });
+  };
+
   // const handleSort = (event) => {
   //   const property = event.target.textContent.toLowerCase();
   //   const compare = (a, b) => {
@@ -53,32 +124,45 @@ const MyRepairsPage = ({ history }) => {
   //   const sorted = requests.sort(compare);
   //   setRequests([...sorted]);
   // };
-  const getRepairs = async () => {
+  const getTransactions = async () => {
     setLoading(true);
-    setRepairLoading(true);
-    try {
-      api
-        .get("/tech/ongoing", {
-          headers: { "auth-token": token },
-        })
-        .then((response) => {
-          setRepair(response.data);
-          setRepairLoading(false);
-          api
-            .get("/tech/requests/", {
-              headers: { "auth-token": token },
-            })
-            .then((response) => {
-              response.data.reverse();
-              setRequests(response.data);
-              setLoading(false);
-            });
-        });
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
+    api
+      .get("/tech/requests/", {
+        headers: { "auth-token": token },
+      })
+      .then((response) => {
+        response.data.reverse();
+        setRequests(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
   };
+  const timeElapsed = (lastUpdate) => {
+    const timeDiff = Date.now() - Date.parse(lastUpdate);
+    const duration = moment.duration(timeDiff);
+    return `${
+      Math.floor(duration.asDays())
+        ? Math.floor(duration.asDays()).toString() + " d "
+        : ""
+    } ${Math.floor(duration.asHours())} hr ${moment
+      .utc(timeDiff)
+      .format("mm")} min`;
+  };
+  const timeOngoing = (ongoing, lastUpdate) => {
+    const timeDiff = ongoing + (Date.now() - Date.parse(lastUpdate));
+    const duration = moment.duration(timeDiff);
+    return `${
+      Math.floor(duration.asDays())
+        ? Math.floor(duration.asDays()).toString() + " d "
+        : ""
+    } ${Math.floor(duration.asHours())} hr ${moment
+      .utc(timeDiff)
+      .format("mm")} min`;
+  };
+
   return (
     <Row className="myRepairs-row flex-column">
       <Alert handleClose={handleClose} show={show} />
@@ -93,7 +177,7 @@ const MyRepairsPage = ({ history }) => {
           >
             {repair && !repairLoading ? (
               <>
-                <Col md={3} className="h-100">
+                <Col md={3} className="h-100 text-center">
                   <Image
                     className="img-fluid mh-100"
                     src={repair.image_url}
@@ -102,18 +186,91 @@ const MyRepairsPage = ({ history }) => {
                   />
                 </Col>
                 <Col md={7} className="h-100">
-                  <Badge variant="warning">Ongoing</Badge>
-                  <p>{repair.device}</p>
+                  <div className="d-md-flex flex-column h-100">
+                    <div className="mw-100">
+                      <div>{repair.device}</div>
+                      <div>
+                        <Badge variant="warning">Ongoing</Badge>
+                        {repair.expedite ? (
+                          <Badge variant="danger">Expedite</Badge>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                    <div className="d-md-flex repair-issue-body justify-content-around flex-grow-1">
+                      <div className="w-50 repair-issue mh-100">
+                        {repair.issue}
+                      </div>
+                      <div className="w-50 pl-2 mh-100">
+                        <ul>
+                          <li title="Time spent working (ONGOING)">
+                            Time spent:
+                            <FaRegQuestionCircle
+                              style={{ verticalAlign: "baseline" }}
+                            />
+                          </li>
+                          <li>
+                            {repair.totalOngoing
+                              ? timeOngoing(
+                                  repair.totalOngoing,
+                                  repair.lastUpdate
+                                )
+                              : timeElapsed(repair.lastUpdate)}
+                          </li>
+                          <li title="Time elapsed from start (INCOMING)">
+                            Total time:
+                            <FaRegQuestionCircle
+                              style={{ verticalAlign: "baseline" }}
+                            />
+                          </li>
+                          <li>{timeElapsed(repair.dateCreated)}</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </Col>
                 <Col md={2} className="h-100">
                   <div className="h-100 d-flex flex-column justify-content-around">
-                    <Button variant="danger" size="sm">
+                    <Button
+                      value="ON HOLD"
+                      onClick={() =>
+                        setUpdate({
+                          ...update,
+                          status: "ON HOLD",
+                          showUpdate: true,
+                        })
+                      }
+                      variant="danger"
+                      size="sm"
+                    >
                       Hold <FaPause />
                     </Button>
-                    <Button variant="info" size="sm">
-                      Outgoing <FaCheck />
+                    <Button
+                      value="OUTGOING"
+                      onClick={() =>
+                        setUpdate({
+                          ...update,
+                          status: "OUTGOING",
+                          showUpdate: true,
+                        })
+                      }
+                      variant="success"
+                      size="sm"
+                    >
+                      Finish <FaCheck />
                     </Button>
-                    <Button variant="secondary" size="sm">
+                    <UpdateModal
+                      show={update.showUpdate}
+                      handleClose={handleClose}
+                      handleSubmit={handleSubmit}
+                      state={update}
+                    />
+                    <Button
+                      onClick={() => history.push("/repairs/" + repair._id)}
+                      variant="secondary"
+                      size="sm"
+                    >
                       View <FaEye />
                     </Button>
                   </div>
@@ -127,9 +284,7 @@ const MyRepairsPage = ({ history }) => {
               <p>No ongoing repair.</p>
             )}
           </Row>
-          <Row className="p-2 onhold-row rounded bg-light mb-2 justify-content-between">
-            {}
-          </Row>
+          <Row className="p-2 onhold-row rounded bg-light mb-2 justify-content-between"></Row>
         </Container>
       </Col>
       <Col className="col-table-myRepairs flex-grow-1">
@@ -166,7 +321,7 @@ const MyRepairsPage = ({ history }) => {
                   </tr>
                 ) : (
                   <tr>
-                    <td colSpan="5">You have no requests.</td>
+                    <td colSpan="5">You have no recent transaction.</td>
                   </tr>
                 )}
               </tbody>

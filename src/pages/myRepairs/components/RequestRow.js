@@ -9,6 +9,7 @@ const RequestRow = ({ data, handleClick, setShow }) => {
     const original = moment(date);
     return original.format("l, h:mm a");
   };
+
   return (
     <tr
       className="tr-myRepairs"

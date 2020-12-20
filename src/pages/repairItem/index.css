@@ -3,23 +3,26 @@
     width: 480px;
     margin: 0 auto;
 }
+
 .details-body-repairItem {
-    font-weight: normal;    
+    font-weight: normal;
 }
-ul{
+
+.details-body-repairItem ul {
     list-style: none;
 }
 
-ul li:nth-child(odd){
+.details-body-repairItem ul li:nth-child(odd) {
     font-size: xx-small;
 }
 
-li a.email {
+.details-body-repairItem li a.email {
     position: absolute;
     top: 100%;
     left: 0;
     display: none;
 }
+
 td.repairItem a.email {
     position: absolute;
     left: 50%;
@@ -27,7 +30,7 @@ td.repairItem a.email {
     display: none;
 }
 
-li.li-container:hover a.email, td:hover a.email {
+.details-body-repairItem li.li-container:hover a.email, td:hover a.email {
     display: inline;
     border: gray 1px solid;
     border-radius: 5px;
@@ -35,18 +38,21 @@ li.li-container:hover a.email, td:hover a.email {
     background-color: white;
     z-index: 1;
 }
+
 .issue-repairItem {
     overflow-wrap: break-word;
     overflow-y: auto !important;
 }
 
-.tech-button button{
+.tech-button button {
     margin: 0 3px;
 }
+
 .table-div-repairItem {
     overflow-y: auto;
 }
-.table-div-repairItem table{
+
+.table-div-repairItem table {
     table-layout: fixed;
 }
 
@@ -61,15 +67,15 @@ table.repairItem th {
 .transactions-row {
     height: 100%;
 }
-table.repairItem td.repairItem span{
+
+table.repairItem td.repairItem span {
     display: block;
     overflow-wrap: break-word;
     overflow-y: auto;
     height: 75px !important
-    
 }
 
-@media (min-width: 992px) {  
+@media (min-width: 992px) {
     .table-div-repairItem, .repair-item-info {
         max-height: 100%;
     }
@@ -77,8 +83,9 @@ table.repairItem td.repairItem span{
         min-height: 0;
     }
 }
-@media (max-width: 767.98px){
-    .table-responsive-sm table.repairItem{
+
+@media (max-width: 767.98px) {
+    .table-responsive-sm table.repairItem {
         table-layout: auto;
     }
 }
