@@ -27,14 +27,14 @@ const TopNav = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
               <Nav.Link className="text-white" href="/">
-                Queue
+                Requests
               </Nav.Link>
               <Nav.Link className="text-white" href="/user/requests">
-                Requests
+                MyRequests
               </Nav.Link>
               {user.type !== "USER" ? (
                 <Nav.Link className="text-white" href="/user/repairs">
-                  Repairs
+                  MyRepairs
                 </Nav.Link>
               ) : (
                 ""

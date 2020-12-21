@@ -8,14 +8,15 @@ import {
   Image,
   Button,
 } from "react-bootstrap";
-import { FaCheck, FaPause, FaEye, FaRegQuestionCircle } from "react-icons/fa";
+import { FaCheck, FaPause, FaEye } from "react-icons/fa";
 import api from "../../services/api";
 import { SessionContext } from "../../session-context";
 import RequestRow from "./components/RequestRow";
 import Alert from "./components/Alert";
 import UpdateModal from "./components/UpdateModal";
 import OnHoldCard from "./components/OnHoldCard";
-import moment from "moment";
+import TimeDisplay from "./components/TimeDisplay";
+
 import "./index.css";
 
 const MyRepairsPage = ({ history }) => {
@@ -39,10 +40,6 @@ const MyRepairsPage = ({ history }) => {
     setRepairLoading(true);
     getRepair();
     getTransactions();
-    const interval = setInterval(() => {
-      getRepair();
-    }, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   const handleClose = () => {
@@ -140,28 +137,6 @@ const MyRepairsPage = ({ history }) => {
         console.log(error);
       });
   };
-  const timeElapsed = (lastUpdate) => {
-    const timeDiff = Date.now() - Date.parse(lastUpdate);
-    const duration = moment.duration(timeDiff);
-    return `${
-      Math.floor(duration.asDays())
-        ? Math.floor(duration.asDays()).toString() + " d "
-        : ""
-    } ${Math.floor(duration.asHours())} hr ${moment
-      .utc(timeDiff)
-      .format("mm")} min`;
-  };
-  const timeOngoing = (ongoing, lastUpdate) => {
-    const timeDiff = ongoing + (Date.now() - Date.parse(lastUpdate));
-    const duration = moment.duration(timeDiff);
-    return `${
-      Math.floor(duration.asDays())
-        ? Math.floor(duration.asDays()).toString() + " d "
-        : ""
-    } ${Math.floor(duration.asHours())} hr ${moment
-      .utc(timeDiff)
-      .format("mm")} min`;
-  };
 
   return (
     <Row className="myRepairs-row flex-column">
@@ -203,29 +178,7 @@ const MyRepairsPage = ({ history }) => {
                         {repair.issue}
                       </div>
                       <div className="w-50 pl-2 mh-100">
-                        <ul>
-                          <li title="Time spent working (ONGOING)">
-                            Time spent:
-                            <FaRegQuestionCircle
-                              style={{ verticalAlign: "baseline" }}
-                            />
-                          </li>
-                          <li>
-                            {repair.totalOngoing
-                              ? timeOngoing(
-                                  repair.totalOngoing,
-                                  repair.lastUpdate
-                                )
-                              : timeElapsed(repair.lastUpdate)}
-                          </li>
-                          <li title="Time elapsed from start (INCOMING)">
-                            Total time:
-                            <FaRegQuestionCircle
-                              style={{ verticalAlign: "baseline" }}
-                            />
-                          </li>
-                          <li>{timeElapsed(repair.dateCreated)}</li>
-                        </ul>
+                        <TimeDisplay />
                       </div>
                     </div>
                   </div>

@@ -13,6 +13,7 @@ import HistoryRow from "./Components/HistoryRow";
 import UpdateModal from "./Components/UpdateModal";
 import CancelModal from "./Components/CancelModal";
 import DeleteModal from "./Components/DeleteModal";
+import TimeDisplay from "./Components/TimeDisplay";
 
 import "./index.css";
 
@@ -38,11 +39,8 @@ const RequestItemPage = ({ history }) => {
     if (!isLoggedIn) return history.push("/login");
     setState({ ...state, repairLoading: true });
     getRepair();
-
-    const interval = setInterval(() => getRepair(), 30000);
-    return () => clearInterval(interval);
   }, []);
-  const getRepair = async () => {
+  const getRepair = () => {
     api
       .get("/requests/" + id, {
         headers: { "auth-token": token },
@@ -167,40 +165,9 @@ const RequestItemPage = ({ history }) => {
 
   const newDate = (date) => {
     const original = moment(date);
-    return original.format("MM/D/YYYY, h:mm:ss a");
+    return original.format("MM/D/YYYY, h:mma");
   };
-  const timeElapsed = (lastUpdate) => {
-    const timeDiff = Date.now() - Date.parse(lastUpdate);
-    const duration = moment.duration(timeDiff);
-    return `${
-      Math.floor(duration.asDays())
-        ? Math.floor(duration.asDays()).toString() + " d "
-        : ""
-    } ${Math.floor(duration.asHours())} hr ${moment
-      .utc(timeDiff)
-      .format("mm")} min`;
-  };
-  const timeOngoing = (ongoing, lastUpdate) => {
-    const timeDiff = ongoing + (Date.now() - Date.parse(lastUpdate));
-    const duration = moment.duration(timeDiff);
-    return `${
-      Math.floor(duration.asDays())
-        ? Math.floor(duration.asDays()).toString() + " d "
-        : ""
-    } ${Math.floor(duration.asHours())} hr ${moment
-      .utc(timeDiff)
-      .format("mm")} min`;
-  };
-  const parseMilli = (ongoing) => {
-    const duration = moment.duration(ongoing);
-    return `${
-      Math.floor(duration.asDays())
-        ? Math.floor(duration.asDays()).toString() + " d "
-        : ""
-    } ${Math.floor(duration.asHours())} hr ${moment
-      .utc(ongoing)
-      .format("mm")} min`;
-  };
+
   const options = (status) => {
     if (user.type !== "USER") {
       return (
@@ -303,8 +270,9 @@ const RequestItemPage = ({ history }) => {
                       {repair.expedite ? "EXPEDITE" : "REGULAR"}
                     </Badge>
                   </div>
+
                   <div className="d-flex flex-column flex-sm-row justify-content-between mh-100">
-                    <ul className="mb-0 border p-1">
+                    <ul className="mb-0">
                       <li>Created</li>
                       <li>{newDate(repair.dateCreated)}</li>
                       <li>Requestor</li>
@@ -318,7 +286,7 @@ const RequestItemPage = ({ history }) => {
                         </a>
                       </li>
                     </ul>
-                    <ul className="mb-0 border p-1">
+                    <ul className="mb-0">
                       <li>Updated</li>
                       <li>
                         {repair.dateCreated !== repair.lastUpdate
@@ -336,35 +304,11 @@ const RequestItemPage = ({ history }) => {
                         </a>
                       </li>
                     </ul>
-                    <ul className="mb-0 border p-1">
-                      <li title="Time spent working (ONGOING)">
-                        Time spent:
-                        <FaRegQuestionCircle
-                          style={{ verticalAlign: "baseline" }}
-                        />
-                      </li>
-                      <li>
-                        {repair.totalOngoing && repair.status === "ONGOING"
-                          ? timeOngoing(repair.totalOngoing, repair.lastUpdate)
-                          : !repair.totalOngoing && repair.status === "ONGOING"
-                          ? parseMilli(repair.lastUpdate)
-                          : repair.totalOngoing && repair.status !== "ONGOING"
-                          ? parseMilli(repair.totalOngoing)
-                          : "N/A"}
-                      </li>
-                      <li title="Time elapsed from start (INCOMING)">
-                        Total time:{" "}
-                        <FaRegQuestionCircle
-                          style={{ verticalAlign: "baseline" }}
-                        />
-                      </li>
-                      <li>
-                        {!repair.totalTime
-                          ? timeElapsed(repair.dateCreated)
-                          : parseMilli(repair.totalTime)}
-                      </li>
-                    </ul>
+                    <div className="">
+                      <TimeDisplay id={id} />
+                    </div>
                   </div>
+
                   <ul className="issue-ul mb-0 flex-grow-1">
                     <li>Issue/Description</li>
                     <li className="issue-repairItem">{repair.issue}</li>
