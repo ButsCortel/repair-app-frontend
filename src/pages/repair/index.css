@@ -1,16 +1,16 @@
-.card-img-top {
-    height: 170px ;
-    width: 240px ;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-.card { 
-    height: 380px ;
-    width: 260px ;
+.card-img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100% !important;
+    height: 170px !important;
 }
 
-.card-body div.scroll{
+.card {
+    height: 380px;
+    width: 260px;
+}
+
+.card-body div.scroll {
     padding: 5px;
     border: lightgray solid 1px;
     height: 70px;
@@ -18,12 +18,12 @@
     overflow: auto;
 }
 
-
-.card:hover {
+.repair-row .card:hover {
     z-index: 1;
     cursor: pointer;
     opacity: 0.6;
 }
+
 .device-name {
     height: 50px;
     overflow: auto;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 
-const UpdateModal = ({ show, handleClose, handleSubmit, state }) => {
+const UpdateModal = ({ show, handleClose, handleSubmit, state, status }) => {
   const [note, setNote] = useState("");
   return (
     <Modal
@@ -12,6 +12,7 @@ const UpdateModal = ({ show, handleClose, handleSubmit, state }) => {
         setNote("");
       }}
       backdrop="static"
+      animation={false}
     >
       <Modal.Header closeButton>
         <Modal.Title>Update Request</Modal.Title>
@@ -19,10 +20,10 @@ const UpdateModal = ({ show, handleClose, handleSubmit, state }) => {
       <Modal.Body>
         <Form>
           <Form.Group controlId="note">
-            <Form.Label>Update request to {state.status}</Form.Label>
+            <Form.Label>Update request to {status}</Form.Label>
             <Form.Control
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Note for future reference:"
+              placeholder="Note: (optional)"
               name="note"
               value={note}
               as="textarea"
@@ -37,10 +38,11 @@ const UpdateModal = ({ show, handleClose, handleSubmit, state }) => {
       <Modal.Footer>
         {state.loading ? <Spinner animation="border" /> : ""}
         <Button
-          disabled={!note}
           variant="primary"
-          title={!note ? "Please enter reason first." : ""}
-          onClick={() => handleSubmit(state.status, note)}
+          onClick={() => {
+            handleSubmit(note);
+            setNote("");
+          }}
         >
           Confirm
         </Button>
@@ -58,4 +60,4 @@ const UpdateModal = ({ show, handleClose, handleSubmit, state }) => {
   );
 };
 
-export default React.memo(UpdateModal);
+export default UpdateModal;

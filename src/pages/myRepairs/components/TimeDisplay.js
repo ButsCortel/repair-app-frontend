@@ -62,7 +62,7 @@ const TimeDisplay = () => {
     } ${moment.utc(timeDiff).format("mm")}min`;
   };
   return (
-    <ul>
+    <ul className="mb-0">
       <li title="Time spent working (ONGOING)">
         Time spent:
         <FaRegQuestionCircle style={{ verticalAlign: "baseline" }} />

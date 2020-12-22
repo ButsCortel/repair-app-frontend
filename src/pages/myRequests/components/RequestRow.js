@@ -16,7 +16,7 @@ const RequestRow = ({ data, handleClick }) => {
           <img alt="device image" key={data._id} src={data.image_url} />
         </span>
 
-        <span className="scroll-span">{data.device}</span>
+        <span className="device-name">{data.device}</span>
       </td>
       <td>
         <span className="scroll-span">{data.issue}</span>

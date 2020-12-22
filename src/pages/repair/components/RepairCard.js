@@ -21,7 +21,7 @@ const RepairCard = ({ data, handleClick }) => {
           ? ""
           : "primary"
       }
-      className="my-2 p-1 mx-auto"
+      className="my-2 p-1 mx-auto mw-100"
     >
       <Card.Header
         title={data.device}
@@ -29,10 +29,10 @@ const RepairCard = ({ data, handleClick }) => {
       >
         {data.device}
       </Card.Header>
-      <div
-        style={{ backgroundImage: `url(${data.image_url})` }}
-        className="card-img-top mx-auto border border-light rounded"
-      ></div>
+      <img
+        src={data.image_url}
+        className="card-img border border-light rounded"
+      />
       <Card.Body className="p-2">
         <div className="small text-center">
           <Badge className="mx-1" variant={statusColor(data.status)}>

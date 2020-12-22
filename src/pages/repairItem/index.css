@@ -39,6 +39,10 @@ td.repairItem a.email {
     z-index: 1;
 }
 
+.repair-item-info .repair-device {
+    overflow-wrap: break-word;
+}
+
 .issue-repairItem {
     overflow-wrap: break-word;
     overflow-y: auto !important;

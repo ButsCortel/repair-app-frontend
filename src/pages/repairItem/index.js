@@ -72,11 +72,11 @@ const RequestItemPage = ({ history }) => {
     setState({ ...state, [name]: value });
   };
   const handleSubmit = async (status, note) => {
-    if (!status || !note)
+    if (!status)
       return setState({
         ...state,
         hasError: true,
-        errorMessage: "Missing Information!",
+        errorMessage: "Missing new status!",
         loading: false,
       });
     try {
@@ -256,7 +256,7 @@ const RequestItemPage = ({ history }) => {
                     src={repair.image_url}
                   />
                 </div>
-                <h4>{repair.device}</h4>
+                <h4 className="repair-device">{repair.device}</h4>
 
                 <Container className="details-body-repairItem text-left">
                   <div className="text-left">

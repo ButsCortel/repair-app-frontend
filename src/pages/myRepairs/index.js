@@ -21,13 +21,18 @@ import "./index.css";
 
 const MyRepairsPage = ({ history }) => {
   const { isLoggedIn } = useContext(SessionContext);
-  const [requests, setRequests] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [transactions, setTransactions] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [transLoading, setTransLoading] = useState(false);
   const [repairLoading, setRepairLoading] = useState(false);
+  const [requestsLoading, setRequestsLoading] = useState(false);
   const [repair, setRepair] = useState(null);
   const [show, setShow] = useState(false);
+  const [showUpdate, setShowUpdate] = useState(false);
+  const [status, setStatus] = useState("");
+  const [id, setId] = useState("");
+  const [prevStatus, setPrevStatus] = useState("");
   const [update, setUpdate] = useState({
-    showUpdate: false,
     hasError: false,
     loading: false,
     errorMessage: "",
@@ -38,33 +43,32 @@ const MyRepairsPage = ({ history }) => {
     if (!isLoggedIn || user.type === "USER") return history.push("/login");
     if (user.type === "USER") return history.push("/");
     setRepairLoading(true);
+    setRequestsLoading(true);
     getRepair();
+    getRequests();
     getTransactions();
   }, []);
 
   const handleClose = () => {
     if (show) return setShow(false);
-    if (update.showUpdate)
-      return setUpdate({
-        showUpdate: false,
+    if (showUpdate) {
+      setShowUpdate(false);
+      setUpdate({
         hasError: false,
         loading: false,
         errorMessage: "",
-        note: "",
-        status: "",
       });
+    }
   };
   const handleClick = (id) => {
     history.push("/repairs/" + id);
   };
-  const handleSubmit = (status, note) => {
+  const handleSubmit = (note) => {
     setUpdate({
       ...update,
       loading: true,
-      hasError: false,
-      errorMessage: "",
     });
-    if (!status || !note)
+    if (!status)
       return setUpdate({
         ...update,
         hasError: true,
@@ -73,20 +77,28 @@ const MyRepairsPage = ({ history }) => {
       });
     api
       .put(
-        "/requests/" + repair._id,
-        { status, prevStatus: repair.status, note },
+        "/requests/" + id,
+        { status, prevStatus, note },
         { headers: { "auth-token": token } }
       )
       .then((res) => {
         getRepair();
+        getRequests();
         getTransactions();
+        setUpdate({
+          ...update,
+          hasError: false,
+          errorMessage: "",
+          loading: false,
+        });
+        setShowUpdate(false);
       })
       .catch((err) => {
         setUpdate({
           ...update,
           loading: false,
           hasError: true,
-          errorMessage: err.response.message,
+          errorMessage: err.response.data,
         });
       });
   };
@@ -100,7 +112,36 @@ const MyRepairsPage = ({ history }) => {
         setRepairLoading(false);
       })
       .catch((error) => {
-        setRepairLoading(false);
+        console.log(error.response);
+      });
+  };
+  const getRequests = () => {
+    api
+      .get("/requests/all/" + "CANSTART", {
+        headers: { "auth-token": token },
+      })
+      .then((response) => {
+        setRequests(response.data);
+        setRequestsLoading(false);
+      })
+      .catch((error) => {
+        setRequests([]);
+        setRequestsLoading(false);
+      });
+  };
+  const getTransactions = () => {
+    setTransLoading(true);
+    api
+      .get("/tech/requests/", {
+        headers: { "auth-token": token },
+      })
+      .then((response) => {
+        response.data.reverse();
+        setTransactions(response.data);
+        setTransLoading(false);
+      })
+      .catch((error) => {
+        setTransLoading(false);
         console.log(error);
       });
   };
@@ -121,21 +162,16 @@ const MyRepairsPage = ({ history }) => {
   //   const sorted = requests.sort(compare);
   //   setRequests([...sorted]);
   // };
-  const getTransactions = async () => {
-    setLoading(true);
-    api
-      .get("/tech/requests/", {
-        headers: { "auth-token": token },
-      })
-      .then((response) => {
-        response.data.reverse();
-        setRequests(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
+
+  const handleUpdate = (status, prevStatus, id) => {
+    setStatus(status);
+    setPrevStatus(prevStatus);
+    setShowUpdate(true);
+    setId(id);
+    setUpdate({
+      ...update,
+      showUpdate: true,
+    });
   };
 
   return (
@@ -152,9 +188,9 @@ const MyRepairsPage = ({ history }) => {
           >
             {repair && !repairLoading ? (
               <>
-                <Col md={3} className="h-100 text-center">
+                <Col md={3} className="text-center d-flex align-items-center">
                   <Image
-                    className="img-fluid mh-100"
+                    className="img-fluid mh-100 ongoing-image"
                     src={repair.image_url}
                     rounded
                     thumbnail
@@ -163,7 +199,9 @@ const MyRepairsPage = ({ history }) => {
                 <Col md={7} className="h-100">
                   <div className="d-md-flex flex-column h-100">
                     <div className="mw-100">
-                      <div>{repair.device}</div>
+                      <span className="mw-100 repair-device">
+                        {repair.device}
+                      </span>
                       <div>
                         <Badge variant="warning">Ongoing</Badge>
                         {repair.expedite ? (
@@ -188,11 +226,7 @@ const MyRepairsPage = ({ history }) => {
                     <Button
                       value="ON HOLD"
                       onClick={() =>
-                        setUpdate({
-                          ...update,
-                          status: "ON HOLD",
-                          showUpdate: true,
-                        })
+                        handleUpdate("ON HOLD", repair.status, repair._id)
                       }
                       variant="danger"
                       size="sm"
@@ -202,23 +236,14 @@ const MyRepairsPage = ({ history }) => {
                     <Button
                       value="OUTGOING"
                       onClick={() =>
-                        setUpdate({
-                          ...update,
-                          status: "OUTGOING",
-                          showUpdate: true,
-                        })
+                        handleUpdate("OUTGOING", repair.status, repair._id)
                       }
                       variant="success"
                       size="sm"
                     >
                       Finish <FaCheck />
                     </Button>
-                    <UpdateModal
-                      show={update.showUpdate}
-                      handleClose={handleClose}
-                      handleSubmit={handleSubmit}
-                      state={update}
-                    />
+
                     <Button
                       onClick={() => history.push("/repairs/" + repair._id)}
                       variant="secondary"
@@ -237,7 +262,39 @@ const MyRepairsPage = ({ history }) => {
               <p>No ongoing repair.</p>
             )}
           </Row>
-          <Row className="p-2 onhold-row rounded bg-light mb-2 justify-content-between"></Row>
+          <UpdateModal
+            show={showUpdate}
+            handleClose={handleClose}
+            handleSubmit={handleSubmit}
+            state={update}
+            status={status}
+          />
+          <Row className="p-2 onhold-row rounded bg-light mb-2">
+            <Col className="h-100">
+              {!requestsLoading && requests ? (
+                <div className="onhold-div d-flex h-100">
+                  {requests.map((request) => {
+                    return (
+                      <OnHoldCard
+                        key={request._id}
+                        request={request}
+                        handleUpdate={handleUpdate}
+                        history={history}
+                      />
+                    );
+                  })}
+                </div>
+              ) : requestsLoading ? (
+                <div className="text-center text-muted">
+                  Loading available requests...
+                </div>
+              ) : (
+                <div className="text-center">
+                  There are no available request yet.
+                </div>
+              )}
+            </Col>
+          </Row>
         </Container>
       </Col>
       <Col className="col-table-myRepairs flex-grow-1">
@@ -254,16 +311,16 @@ const MyRepairsPage = ({ history }) => {
                 </tr>
               </thead>
               <tbody>
-                {requests && !loading ? (
-                  requests.map((request) => (
+                {transactions && !transLoading ? (
+                  transactions.map((transaction) => (
                     <RequestRow
                       handleClick={handleClick}
-                      key={request._id}
-                      data={request}
+                      key={transaction._id}
+                      data={transaction}
                       setShow={setShow}
                     />
                   ))
-                ) : loading ? (
+                ) : transLoading ? (
                   <tr>
                     <td colSpan="5">
                       <Spinner

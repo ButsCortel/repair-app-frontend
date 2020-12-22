@@ -25,6 +25,9 @@ const RepairPage = ({ history }) => {
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
     getRepairs();
+  }, []);
+  useEffect(() => {
+    getRepairs();
   }, [filter]);
 
   const getRepairs = async () => {
@@ -91,7 +94,7 @@ const RepairPage = ({ history }) => {
         </Col>
       </Row>
       {!loading && repairs ? (
-        <Row className="row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
+        <Row className="repair-row row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
           {repairs.map((repair) => (
             <Col key={repair._id}>
               <RepairCard data={repair} handleClick={handleClick} />

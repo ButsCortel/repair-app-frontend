@@ -4,13 +4,14 @@
 }
 
 .table-div-myRepairs {
-    min-height: 190px;
+    min-height: 170px;
     flex-grow: 1;
     overflow-y: auto;
 }
 
 .table-div-myRepairs th {
     width: 100%;
+    padding: 0;
     background: white;
     position: sticky;
     top: 0;
@@ -62,8 +63,40 @@ tr.tr-myRepairs {
     font-size: smaller;
 }
 
+.ongoing-row .repair-device {
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .onhold-row {
-    height: 120px;
+    height: 140px;
+}
+
+.onhold-div {
+    overflow-y: hidden;
+    overflow-x: scroll;
+}
+
+.onhold-card .card-title, .onhold-card .card-text {
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.onhold-card .badges {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+}
+
+.onhold-image {
+    display: block;
+    margin: 0 auto;
+    max-width: 100% !important;
+    max-height: 100px !important;
 }
 
 @media (min-width: 992px) {
@@ -78,5 +111,11 @@ tr.tr-myRepairs {
     }
     .myRepairs-row {
         height: 100%;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .ongoing-row {
+        min-height: 500px;
     }
 }

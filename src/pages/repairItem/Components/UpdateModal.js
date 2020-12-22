@@ -13,7 +13,15 @@ const UpdateModal = ({
 }) => {
   const [note, setNote] = useState("");
   return (
-    <Modal centered show={show} onHide={handleClose} backdrop="static">
+    <Modal
+      centered
+      show={show}
+      onHide={() => {
+        handleClose();
+        setNote("");
+      }}
+      backdrop="static"
+    >
       <Modal.Header closeButton>
         <Modal.Title>Update Status</Modal.Title>
       </Modal.Header>
@@ -39,7 +47,7 @@ const UpdateModal = ({
           </Form.Group>
           <Form.Group className="" controlId="note">
             <Form.Control
-              placeholder="Note:"
+              placeholder="Note: (optional)"
               as="textarea"
               name="note"
               value={note}
@@ -63,7 +71,7 @@ const UpdateModal = ({
               handleSubmit(state.status, note);
               setNote("");
             }}
-            disabled={!state.status || !note || state.loading}
+            disabled={!state.status || state.loading}
           >
             Submit
           </Button>
