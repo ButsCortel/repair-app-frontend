@@ -20,6 +20,8 @@ const RepairPage = ({ history }) => {
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("All");
+  const [search, setSearch] = useState("");
+  const [searchRes, setSearchRes] = useState("");
 
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
@@ -53,8 +55,25 @@ const RepairPage = ({ history }) => {
   const handleClick = (id) => {
     history.push("/repairs/" + id);
   };
-  const handleSelect = (key, event) => {
+  const handleSelect = (event) => {
     setFilter(event.target.innerText);
+  };
+  const handleSearch = () => {
+    if (repairs) {
+      const searched = repairs.filter((repair) => {
+        return repair.device.includes(search);
+      });
+      setSearchRes(searched);
+    }
+  };
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
+  const handleEnter = (e) => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      handleSearch();
+    }
   };
 
   return (
@@ -86,10 +105,13 @@ const RepairPage = ({ history }) => {
             <FormControl
               type="text"
               placeholder="search"
+              value={search}
+              onChange={handleChange}
               aria-label="Input group example"
               aria-describedby="btnGroupAddon2"
+              onKeyUp={handleEnter}
             />
-            <InputGroup.Append>
+            <InputGroup.Append onClick={handleSearch}>
               <InputGroup.Text id="btnGroupAddon2">
                 <MdSearch />
               </InputGroup.Text>
@@ -99,11 +121,17 @@ const RepairPage = ({ history }) => {
       </Row>
       {!loading && repairs ? (
         <Row className="repair-row row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1">
-          {repairs.map((repair) => (
-            <Col key={repair._id}>
-              <RepairCard data={repair} handleClick={handleClick} />
-            </Col>
-          ))}
+          {searchRes
+            ? searchRes.map((repair) => (
+                <Col key={repair._id}>
+                  <RepairCard data={repair} handleClick={handleClick} />
+                </Col>
+              ))
+            : repairs.map((repair) => (
+                <Col key={repair._id}>
+                  <RepairCard data={repair} handleClick={handleClick} />
+                </Col>
+              ))}
         </Row>
       ) : loading ? (
         <Row>
