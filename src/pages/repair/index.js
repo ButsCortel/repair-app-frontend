@@ -10,7 +10,6 @@ import {
   FormControl,
 } from "react-bootstrap";
 import RepairCard from "./components/RepairCard";
-import { MdSearch } from "react-icons/md";
 import api from "../../services/api";
 import "./index.css";
 
