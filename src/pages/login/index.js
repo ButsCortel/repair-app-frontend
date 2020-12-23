@@ -9,7 +9,7 @@ const LoginPage = ({ history }) => {
 
   useEffect(() => {
     if (isLoggedIn) history.push("/");
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [login, setLogin] = useState({
     email: "",

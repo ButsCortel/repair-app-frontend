@@ -10,6 +10,7 @@ const TimeDisplay = () => {
   const [repair, setRepair] = useState(null);
   useEffect(() => {
     getRepair();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     let interval;
@@ -20,6 +21,7 @@ const TimeDisplay = () => {
     }
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repair]);
   const getRepair = () => {
     api

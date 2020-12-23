@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
-import { Row, Col, Button, Spinner } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 import { MdAddToQueue } from "react-icons/md";
 import api from "../../services/api";
 import { SessionContext } from "../../session-context";
@@ -28,6 +28,7 @@ const MyRequestsPage = ({ history }) => {
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
     getRepairs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const preview = useMemo(() => {

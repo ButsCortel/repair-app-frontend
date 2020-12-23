@@ -1,5 +1,4 @@
-import React, { useContext, useState } from "react";
-import { Button } from "react-bootstrap";
+import React, { useContext } from "react";
 import moment from "moment";
 import { SessionContext } from "../../../session-context";
 
@@ -13,7 +12,7 @@ const RequestRow = ({ data, handleClick }) => {
     <tr className="tr-myRequests" onClick={() => handleClick(data._id)}>
       <td>
         <span className="img-span d-flex justify-content-center align-items-center">
-          <img alt="device image" key={data._id} src={data.image_url} />
+          <img alt="device" key={data._id} src={data.image_url} />
         </span>
 
         <span className="device-name">{data.device}</span>

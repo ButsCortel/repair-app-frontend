@@ -5,10 +5,9 @@ import api from "../../services/api";
 
 const RegisterPage = ({ history }) => {
   const { isLoggedIn } = useContext(SessionContext);
-
   useEffect(() => {
     if (isLoggedIn) history.push("/");
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [register, setRegister] = useState({
     firstName: "",
@@ -42,7 +41,7 @@ const RegisterPage = ({ history }) => {
         });
       }
 
-      const response = await api.post("/user/create", {
+      await api.post("/user/create", {
         firstName,
         lastName,
         email,

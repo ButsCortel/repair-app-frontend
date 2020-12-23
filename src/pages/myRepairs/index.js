@@ -47,6 +47,7 @@ const MyRepairsPage = ({ history }) => {
     getRepair();
     getRequests();
     getTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClose = () => {
@@ -118,7 +119,7 @@ const MyRepairsPage = ({ history }) => {
   };
   const getRequests = () => {
     api
-      .get("/requests/all/" + "CANSTART", {
+      .get("/requests/all/CANSTART", {
         headers: { "auth-token": token },
       })
       .then((response) => {

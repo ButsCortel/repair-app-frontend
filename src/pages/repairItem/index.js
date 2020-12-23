@@ -39,6 +39,7 @@ const RequestItemPage = ({ history }) => {
     if (!isLoggedIn) return history.push("/login");
     setState({ ...state, repairLoading: true });
     getRepair();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const getRepair = () => {
     api

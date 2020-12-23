@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import moment from "moment";
 import { SessionContext } from "../../../session-context";
 
@@ -25,6 +25,7 @@ const RequestRow = ({ data, handleClick, setShow }) => {
               ? data.repair.image_url
               : require("../../../assets/no_image.png").default
           }
+          alt="device"
         />
         <span>{data.device}</span>
       </td>

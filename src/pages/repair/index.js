@@ -3,7 +3,6 @@ import { SessionContext } from "../../session-context";
 import {
   Row,
   Col,
-  Spinner,
   DropdownButton,
   Dropdown,
   ButtonGroup,
@@ -25,6 +24,7 @@ const RepairPage = ({ history }) => {
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
     getRepairs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     getRepairs();
