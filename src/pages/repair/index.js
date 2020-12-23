@@ -15,9 +15,9 @@ import api from "../../services/api";
 import "./index.css";
 
 const RepairPage = ({ history }) => {
+  const token = localStorage.getItem("token");
   const { isLoggedIn } = useContext(SessionContext);
   const [repairs, setRepairs] = useState(null);
-  const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
