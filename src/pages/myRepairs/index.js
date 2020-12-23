@@ -21,7 +21,7 @@ import "./index.css";
 
 const MyRepairsPage = ({ history }) => {
   const { isLoggedIn } = useContext(SessionContext);
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState(null);
   const [requests, setRequests] = useState([]);
   const [transLoading, setTransLoading] = useState(false);
   const [repairLoading, setRepairLoading] = useState(false);
@@ -113,6 +113,7 @@ const MyRepairsPage = ({ history }) => {
       })
       .catch((error) => {
         console.log(error.response);
+        setRepairLoading(false);
       });
   };
   const getRequests = () => {
@@ -125,7 +126,7 @@ const MyRepairsPage = ({ history }) => {
         setRequestsLoading(false);
       })
       .catch((error) => {
-        setRequests([]);
+        setRequests(null);
         setRequestsLoading(false);
       });
   };
@@ -180,7 +181,7 @@ const MyRepairsPage = ({ history }) => {
       <Col className="flex-md-grow-0">
         <Container>
           <Row
-            className={`p-2 ongoing-row rounded bg-light mb-2 ${
+            className={`ongoing-row rounded bg-light mb-2 ${
               repairLoading || !repair
                 ? "justify-content-center align-items-center"
                 : " justify-content-between"
@@ -284,13 +285,13 @@ const MyRepairsPage = ({ history }) => {
                     );
                   })}
                 </div>
-              ) : requestsLoading ? (
-                <div className="text-center text-muted">
-                  Loading available requests...
+              ) : !requestsLoading && !requests ? (
+                <div className="d-flex justify-content-center d-flex align-items-center h-100">
+                  <p>There are no available requests yet.</p>
                 </div>
               ) : (
-                <div className="text-center">
-                  There are no available request yet.
+                <div className="text-muted d-flex justify-content-center align-items-center h-100">
+                  <p>Loading available requests...</p>
                 </div>
               )}
             </Col>
@@ -322,7 +323,7 @@ const MyRepairsPage = ({ history }) => {
                   ))
                 ) : transLoading ? (
                   <tr>
-                    <td colSpan="5">
+                    <td style={{ pointerEvents: "none" }} colSpan="5">
                       <Spinner
                         animation="border"
                         style={{ height: "4em", width: "4em" }}
@@ -331,7 +332,9 @@ const MyRepairsPage = ({ history }) => {
                   </tr>
                 ) : (
                   <tr>
-                    <td colSpan="5">You have no recent transaction.</td>
+                    <td style={{ pointerEvents: "none" }} colSpan="5">
+                      You have no recent transaction.
+                    </td>
                   </tr>
                 )}
               </tbody>

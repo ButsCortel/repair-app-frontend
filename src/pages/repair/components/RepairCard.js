@@ -29,10 +29,13 @@ const RepairCard = ({ data, handleClick }) => {
       >
         {data.device}
       </Card.Header>
-      <img
-        src={data.image_url}
-        className="card-img border border-light rounded"
-      />
+      <div className="card-img-div w-100 d-flex justify-content-center align-items-center">
+        <img
+          src={data.image_url}
+          className="card-img border border-light rounded"
+        />
+      </div>
+
       <Card.Body className="p-2">
         <div className="small text-center">
           <Badge className="mx-1" variant={statusColor(data.status)}>

@@ -203,9 +203,7 @@ const RequestItemPage = ({ history }) => {
     if (user.type === "ADMIN" || user._id === repair.customer._id) {
       return (
         <>
-          {repair.status !== "OUTGOING" &&
-          repair.status !== "COMPLETED" &&
-          repair.status !== "CANCELLED" ? (
+          {repair.status == "INCOMING" ? (
             <Button
               className="rounded-pill mb-sm-0"
               title="Cancel request"
@@ -221,7 +219,7 @@ const RequestItemPage = ({ history }) => {
           ) : (
             ""
           )}
-          {repair.status === "INCOMING" || repair.status === "COMPLETED" ? (
+          {repair.status === "CANCELLED" || repair.status === "COMPLETED" ? (
             <Button
               className="rounded-pill"
               title="Delete request"

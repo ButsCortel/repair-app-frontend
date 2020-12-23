@@ -184,13 +184,13 @@ const MyRequestsPage = ({ history }) => {
                 ))
               ) : state.loading ? (
                 <tr>
-                  <td colSpan="5">
+                  <td style={{ pointerEvents: "none" }} colSpan="5">
                     <span className="text-muted">Loading your requests...</span>
                   </td>
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan="5">
+                  <td style={{ pointerEvents: "none" }} colSpan="5">
                     <span>You have no request.</span>
                   </td>
                 </tr>

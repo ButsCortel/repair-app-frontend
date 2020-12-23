@@ -41,7 +41,6 @@ const UpdateModal = ({ show, handleClose, handleSubmit, state, status }) => {
           variant="primary"
           onClick={() => {
             handleSubmit(note);
-            setNote("");
           }}
         >
           Confirm
