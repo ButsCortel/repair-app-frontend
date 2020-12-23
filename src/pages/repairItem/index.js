@@ -1,9 +1,8 @@
-import React, { useState, useContext, useEffect, useReducer } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { SessionContext } from "../../session-context";
 import { Container, Row, Col, Badge, Button } from "react-bootstrap";
 import { MdDeleteForever, MdUpdate, MdCancel } from "react-icons/md";
-import { FaRegQuestionCircle } from "react-icons/fa";
 
 //Dependencies
 import api from "../../services/api";
