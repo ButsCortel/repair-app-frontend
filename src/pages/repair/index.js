@@ -26,9 +26,13 @@ const RepairPage = ({ history }) => {
     getRepairs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    getRepairs();
-  }, [filter]);
+  useEffect(
+    () => {
+      getRepairs();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filter]
+  );
 
   const getRepairs = async () => {
     setLoading(true);
