@@ -1,11 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Badge, Card } from "react-bootstrap";
 import { SessionContext } from "../../../session-context";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
-
 const RepairCard = ({ data, handleClick }) => {
-  const history = useHistory();
   const { statusColor } = useContext(SessionContext);
 
   return (
@@ -31,6 +28,7 @@ const RepairCard = ({ data, handleClick }) => {
       </Card.Header>
       <div className="card-img-div w-100 d-flex justify-content-center align-items-center">
         <img
+          alt="device"
           src={data.image_url}
           className="card-img border border-light rounded"
         />

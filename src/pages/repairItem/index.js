@@ -204,7 +204,7 @@ const RequestItemPage = ({ history }) => {
     if (user.type === "ADMIN" || user._id === repair.customer._id) {
       return (
         <>
-          {repair.status == "INCOMING" ? (
+          {repair.status === "INCOMING" ? (
             <Button
               className="rounded-pill mb-sm-0"
               title="Cancel request"

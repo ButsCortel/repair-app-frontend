@@ -5,10 +5,15 @@ import { FaRegQuestionCircle } from "react-icons/fa";
 const TimeDisplay = ({ id }) => {
   const token = localStorage.getItem("token");
   const [repair, setRepair] = useState(null);
-  useEffect(() => getRepair(), []);
+  useEffect(
+    () => getRepair(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
   useEffect(() => {
     const interval = setInterval(() => getRepair(), 1000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repair]);
   const getRepair = () => {
     api
