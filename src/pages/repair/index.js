@@ -58,7 +58,8 @@ const RepairPage = ({ history }) => {
   const handleSelect = (event) => {
     setFilter(event.target.innerText);
   };
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    e.preventDefault();
     if (repairs) {
       const searched = repairs.filter((repair) => {
         return repair.device.includes(search);
@@ -68,12 +69,6 @@ const RepairPage = ({ history }) => {
   };
   const handleChange = (e) => {
     setSearch(e.target.value);
-  };
-  const handleEnter = (e) => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      handleSearch();
-    }
   };
 
   return (
@@ -100,7 +95,7 @@ const RepairPage = ({ history }) => {
             </DropdownButton>
           </ButtonGroup>
         </Col>
-        <Col sm={4}>
+        <Col sm={3}>
           <InputGroup className="ml-1">
             <FormControl
               type="text"
@@ -109,13 +104,8 @@ const RepairPage = ({ history }) => {
               onChange={handleChange}
               aria-label="Input group example"
               aria-describedby="btnGroupAddon2"
-              onKeyUp={handleEnter}
+              onKeyUp={handleSearch}
             />
-            <InputGroup.Append onClick={handleSearch}>
-              <InputGroup.Text id="btnGroupAddon2">
-                <MdSearch />
-              </InputGroup.Text>
-            </InputGroup.Append>
           </InputGroup>
         </Col>
       </Row>
