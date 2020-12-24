@@ -218,7 +218,7 @@ const MyRepairsPage = ({ history }) => {
                         {repair.issue}
                       </div>
                       <div className="w-50 pl-2 mh-100">
-                        <TimeDisplay />
+                        <TimeDisplay repair={repair} />
                       </div>
                     </div>
                   </div>

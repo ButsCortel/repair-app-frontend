@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 
 const UpdateModal = ({ show, handleClose, handleSubmit, state, status }) => {
   const [note, setNote] = useState("");
+  useEffect(() => {
+    setNote("");
+  }, [show]);
   return (
     <Modal
       centered
       show={show}
       onHide={() => {
         handleClose();
-        setNote("");
       }}
       backdrop="static"
       animation={false}
@@ -49,7 +51,6 @@ const UpdateModal = ({ show, handleClose, handleSubmit, state, status }) => {
           variant="secondary"
           onClick={() => {
             handleClose();
-            setNote("");
           }}
         >
           Cancel

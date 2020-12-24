@@ -26,7 +26,7 @@ const TopNav = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
-              <Nav.Link className="text-white" t href="/">
+              <Nav.Link className="text-white" href="/">
                 Requests
               </Nav.Link>
               <Nav.Link className="text-white" href="/user/requests">

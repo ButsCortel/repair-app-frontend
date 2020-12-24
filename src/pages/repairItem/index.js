@@ -303,7 +303,7 @@ const RequestItemPage = ({ history }) => {
                       </li>
                     </ul>
                     <div className="">
-                      <TimeDisplay id={id} />
+                      <TimeDisplay repair={repair} />
                     </div>
                   </div>
 

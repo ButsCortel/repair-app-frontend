@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Spinner, Modal, Form, Button } from "react-bootstrap";
 
 const UpdateModal = ({
@@ -12,13 +12,15 @@ const UpdateModal = ({
   state,
 }) => {
   const [note, setNote] = useState("");
+  useEffect(() => {
+    setNote("");
+  }, [show]);
   return (
     <Modal
       centered
       show={show}
       onHide={() => {
         handleClose();
-        setNote("");
       }}
       backdrop="static"
     >
@@ -69,7 +71,6 @@ const UpdateModal = ({
             variant="primary"
             onClick={() => {
               handleSubmit(state.status, note);
-              setNote("");
             }}
             disabled={!state.status || state.loading}
           >
@@ -80,7 +81,6 @@ const UpdateModal = ({
             variant="secondary"
             onClick={() => {
               handleClose();
-              setNote("");
             }}
           >
             Cancel
