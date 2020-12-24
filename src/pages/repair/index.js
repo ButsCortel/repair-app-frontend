@@ -54,8 +54,8 @@ const RepairPage = ({ history }) => {
   const handleClick = (id) => {
     history.push("/repairs/" + id);
   };
-  const handleSelect = (event) => {
-    setFilter(event.target.innerText);
+  const handleSelect = (e) => {
+    setFilter(e.target.innerText);
   };
   const handleSearch = (e) => {
     e.preventDefault();
@@ -80,17 +80,16 @@ const RepairPage = ({ history }) => {
               title={filter}
               variant="outline-primary"
               id="bg-nested-dropdown"
-              onSelect={handleSelect}
               className="w-50"
             >
-              <Dropdown.Item>All</Dropdown.Item>
-              <Dropdown.Item>Incoming</Dropdown.Item>
-              <Dropdown.Item>Received</Dropdown.Item>
-              <Dropdown.Item>Ongoing</Dropdown.Item>
-              <Dropdown.Item>On hold</Dropdown.Item>
-              <Dropdown.Item>Outgoing</Dropdown.Item>
-              <Dropdown.Item>Completed</Dropdown.Item>
-              <Dropdown.Item>Cancelled</Dropdown.Item>
+              <Dropdown.Item onClick={handleSelect}>All</Dropdown.Item>
+              <Dropdown.Item onClick={handleSelect}>Incoming</Dropdown.Item>
+              <Dropdown.Item onClick={handleSelect}>Received</Dropdown.Item>
+              <Dropdown.Item onClick={handleSelect}>Ongoing</Dropdown.Item>
+              <Dropdown.Item onClick={handleSelect}>On hold</Dropdown.Item>
+              <Dropdown.Item onClick={handleSelect}>Outgoing</Dropdown.Item>
+              <Dropdown.Item onClick={handleSelect}>Completed</Dropdown.Item>
+              <Dropdown.Item onClick={handleSelect}>Cancelled</Dropdown.Item>
             </DropdownButton>
           </ButtonGroup>
         </Col>
