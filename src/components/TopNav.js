@@ -22,7 +22,7 @@ const TopNav = () => {
     <>
       <Navbar variant="dark" expand="lg" className="text-white">
         <Container>
-          <Navbar.Brand href="/">Repair</Navbar.Brand>
+          <Navbar.Brand href="/">FixedIt!</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
