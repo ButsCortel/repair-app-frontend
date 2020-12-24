@@ -67,7 +67,8 @@ const LoginPage = ({ history }) => {
       >
         <Col sm={12} md={6} className="m-auto text-center text-md-left">
           {" "}
-          <h1>FixedIt!</h1>
+          <h1 className="text-center">FixedIt!</h1>
+          <p className="text-center">Professional repair services</p>
         </Col>
         <Col sm={12} md={6} className="border rounded p-5 shadow">
           <Form
