@@ -1,11 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
 import { SessionContext } from "../../session-context";
-import { Button, Form, Row, Col } from "react-bootstrap";
+import { Button, Form, Row, Col, Spinner } from "react-bootstrap";
 import api from "../../services/api";
 import "./index.css";
 
 const LoginPage = ({ history }) => {
   const { isLoggedIn, setIsLoggedIn } = useContext(SessionContext);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isLoggedIn) history.push("/");
@@ -27,14 +28,17 @@ const LoginPage = ({ history }) => {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     try {
       const { email, password } = login;
-      if (!email || !password)
+      if (!email || !password) {
+        setLoading(false);
         return setLogin({
           ...login,
           hasError: true,
           errorMessage: "Missing required Information!",
         });
+      }
       const response = await api.post("/user/login", { email, password });
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -51,12 +55,15 @@ const LoginPage = ({ history }) => {
       }, 2000);
     } catch (error) {
       console.log(error);
+
       setLogin({
         ...login,
         hasError: true,
         errorMessage: "Username or Password does not match",
         success: false,
       });
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -109,7 +116,7 @@ const LoginPage = ({ history }) => {
             </Form.Group>
             <Form.Group className="text-center w-50 mx-auto">
               <Button
-                variant="warning"
+                variant="primary"
                 type="submit"
                 className="btn-block rounded-pill"
               >
@@ -123,12 +130,21 @@ const LoginPage = ({ history }) => {
                 Create Account
               </Button>
             </Form.Group>
-            <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
-              {login.hasError ? login.errorMessage : ""}
-            </Form.Text>
-            <Form.Text className="status font-weight-bold position-absolute text-success text-center">
-              {login.success ? "Success! Signing in..." : ""}
-            </Form.Text>
+            <div className="d-flex justify-content-center position-relative">
+              {loading ? (
+                <Spinner className="position-absolute" animation="border" />
+              ) : (
+                <>
+                  {" "}
+                  <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
+                    {login.hasError ? login.errorMessage : ""}
+                  </Form.Text>
+                  <Form.Text className="status font-weight-bold position-absolute text-success text-center">
+                    {login.success ? "Success! Signing in..." : ""}
+                  </Form.Text>{" "}
+                </>
+              )}
+            </div>
           </Form>
         </Col>
       </Row>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { SessionContext } from "../../session-context";
-import { Button, Form, Row, Col } from "react-bootstrap";
+import { Button, Form, Row, Col, Spinner } from "react-bootstrap";
 import api from "../../services/api";
 
 const RegisterPage = ({ history }) => {
   const { isLoggedIn } = useContext(SessionContext);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (isLoggedIn) history.push("/");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -28,6 +29,7 @@ const RegisterPage = ({ history }) => {
     history.push("/login");
   };
   const handleRegister = async (event) => {
+    setLoading(true);
     event.preventDefault();
     try {
       const { firstName, lastName, password, email, type } = register;
@@ -65,6 +67,8 @@ const RegisterPage = ({ history }) => {
         link: "Sign up",
         success: false,
       });
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -130,7 +134,7 @@ const RegisterPage = ({ history }) => {
                 onChange={handleChange}
                 required
               >
-                <option value="" default>
+                <option value="" disabled>
                   Please select Account type...
                 </option>
                 <option value="USER">User</option>
@@ -154,15 +158,27 @@ const RegisterPage = ({ history }) => {
               </Button>
             </Form.Group>
 
-            <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
-              {register.hasError ? register.errorMessage : ""}
-              {register.link ? <a href="/login"> Sign in instead?</a> : ""}
-            </Form.Text>
-            <Form.Text className="status font-weight-bold position-absolute text-success text-center">
-              {register.success
-                ? "Success! Redirecting to Sign in page..."
-                : ""}
-            </Form.Text>
+            <div className="position-relative d-flex justify-content-center">
+              {loading ? (
+                <Spinner className="position-absolute" animation="border" />
+              ) : (
+                <>
+                  <Form.Text className="status font-weight-bold position-absolute text-danger text-center">
+                    {register.hasError ? register.errorMessage : ""}
+                    {register.link ? (
+                      <a href="/login"> Sign in instead?</a>
+                    ) : (
+                      ""
+                    )}
+                  </Form.Text>
+                  <Form.Text className="status font-weight-bold position-absolute text-success text-center">
+                    {register.success
+                      ? "Success! Redirecting to Sign in page..."
+                      : ""}
+                  </Form.Text>
+                </>
+              )}
+            </div>
           </Form>
         </Col>
         <Col
