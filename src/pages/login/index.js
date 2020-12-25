@@ -62,10 +62,14 @@ const LoginPage = ({ history }) => {
   return (
     <>
       <Row
-        className="login justify-content-around align-items-center h-100
+        className="login justify-content-around align-items-center h-100 
       "
       >
-        <Col sm={12} md={6} className="m-auto text-center text-md-left">
+        <Col
+          sm={12}
+          md={6}
+          className="align-self-stretch m-auto text-center text-md-left bg-warning"
+        >
           {" "}
           <h1 className="text-center">FixedIt!</h1>
           <p className="text-center">Professional repair services</p>
@@ -116,7 +120,7 @@ const LoginPage = ({ history }) => {
                 className="btn-block rounded-pill"
                 onClick={handleRegister}
               >
-                Sign up
+                Create Account
               </Button>
             </Form.Group>
             <Form.Text className="status font-weight-bold position-absolute text-danger text-center">

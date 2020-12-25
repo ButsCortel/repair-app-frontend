@@ -20,7 +20,7 @@ const TopNav = () => {
 
   return isLoggedIn ? (
     <>
-      <Navbar variant="dark" expand="lg" className="text-white">
+      <Navbar variant="dark" bg="warning" expand="lg" className="text-white">
         <Container>
           <Navbar.Brand href="/">FixedIt!</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

@@ -73,7 +73,7 @@ const RegisterPage = ({ history }) => {
         <Col
           md={12}
           lg={6}
-          className="order-2 order-lg-1 border rounded p-5 shadow"
+          className="order-2 order-lg-1 border rounded p-5 shadow "
         >
           <Form onSubmit={handleRegister} className="mx-auto">
             <Row>
@@ -139,11 +139,11 @@ const RegisterPage = ({ history }) => {
             </Form.Group>
             <Form.Group className="text-center w-50 mx-auto">
               <Button
-                variant="warning"
+                variant="primary"
                 type="submit"
                 className="btn-block w-30 rounded-pill"
               >
-                Sign up
+                Create Account
               </Button>
               <Button
                 variant="secondary"
@@ -165,7 +165,11 @@ const RegisterPage = ({ history }) => {
             </Form.Text>
           </Form>
         </Col>
-        <Col md={12} lg={6} className="text-center order-1 order-lg-2">
+        <Col
+          md={12}
+          lg={6}
+          className="text-center order-1 order-lg-2 bg-warning"
+        >
           <h1>Sign up</h1>
           <p>Please register first to continue.</p>
         </Col>
