@@ -1,1 +1,2 @@
+﻿# FixedIt!
 This project is the frontend-part of the FixedIt! website. FixedIt! can be used by repair shops (computer, cellphones, etc.) internally to manage their request queue. A user can create an account either as a Technician or as a Requestor only. The user can then keep track of the request queue as well as his/her transactions. Every request item has its own transaction history that displays who, what, when information about the requests' status update.
