@@ -4,7 +4,6 @@ import { SessionContext } from "../../session-context";
 import { Container, Row, Col, Badge, Button } from "react-bootstrap";
 import { MdDeleteForever, MdUpdate, MdCancel } from "react-icons/md";
 
-//Dependencies
 import api from "../../services/api";
 import moment from "moment";
 //Components

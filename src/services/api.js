@@ -4,5 +4,4 @@ import axios from "axios";
 const api = axios.create({
   baseURL: `https://fixed-it.herokuapp.com/`,
 });
-
 export default api;
