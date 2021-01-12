@@ -190,7 +190,10 @@ const MyRepairsPage = ({ history }) => {
           >
             {repair && !repairLoading ? (
               <>
-                <Col md={3} className="text-center d-flex align-items-center">
+                <Col
+                  md={3}
+                  className="text-center h-100 d-flex justify-content-center align-items-center"
+                >
                   <Image
                     className="img-fluid mh-100 ongoing-image"
                     src={repair.image_url}
