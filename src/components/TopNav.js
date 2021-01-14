@@ -41,7 +41,6 @@ const TopNav = () => {
               )}
 
               <NavDropdown title={`Hi ${name}!`} id="topnav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Account</NavDropdown.Item>
                 <NavDropdown.Item onClick={signoutHandler}>
                   Sign out
                 </NavDropdown.Item>
