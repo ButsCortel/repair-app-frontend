@@ -1,10 +1,23 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Badge, Card } from "react-bootstrap";
-import { SessionContext } from "../../../session-context";
 import moment from "moment";
 const RepairCard = ({ data, handleClick }) => {
-  const { statusColor } = useContext(SessionContext);
-
+  const statusColor = (status) => {
+    switch (status) {
+      case "ONGOING":
+        return "warning";
+      case "ON HOLD":
+        return "danger";
+      case "CANCELLED":
+        return "secondary";
+      case "OUTGOING":
+        return "info";
+      case "COMPLETED":
+        return "success";
+      default:
+        return "primary";
+    }
+  };
   return (
     <Card
       onClick={() => handleClick(data._id)}

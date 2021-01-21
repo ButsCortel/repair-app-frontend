@@ -18,7 +18,7 @@ import "./index.css";
 const RequestItemPage = ({ history }) => {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
-  const { isLoggedIn, statusColor } = useContext(SessionContext);
+  const { isLoggedIn } = useContext(SessionContext);
   const [repair, setRepair] = useState(null);
   const [transactions, setTransactions] = useState(null);
   const { id } = useParams();
@@ -33,6 +33,22 @@ const RequestItemPage = ({ history }) => {
     hasError: false,
     errorMessage: "",
   });
+  const statusColor = (status) => {
+    switch (status) {
+      case "ONGOING":
+        return "warning";
+      case "ON HOLD":
+        return "danger";
+      case "CANCELLED":
+        return "secondary";
+      case "OUTGOING":
+        return "info";
+      case "COMPLETED":
+        return "success";
+      default:
+        return "primary";
+    }
+  };
   useEffect(() => {
     if (!isLoggedIn) return history.push("/login");
     setState({ ...state, repairLoading: true });

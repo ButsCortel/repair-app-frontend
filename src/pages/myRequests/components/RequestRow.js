@@ -1,9 +1,23 @@
-import React, { useContext } from "react";
+import React from "react";
 import moment from "moment";
-import { SessionContext } from "../../../session-context";
 
 const RequestRow = ({ data, handleClick }) => {
-  const { statusColor } = useContext(SessionContext);
+  const statusColor = (status) => {
+    switch (status) {
+      case "ONGOING":
+        return "warning";
+      case "ON HOLD":
+        return "danger";
+      case "CANCELLED":
+        return "secondary";
+      case "OUTGOING":
+        return "info";
+      case "COMPLETED":
+        return "success";
+      default:
+        return "primary";
+    }
+  };
   const newDate = (date) => {
     const original = moment(date);
     return original.format("l, h:mm a");
